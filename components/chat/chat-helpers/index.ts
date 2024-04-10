@@ -17,8 +17,10 @@ import {
   ChatPayload,
   ChatSettings,
   LLM,
+  LLMID,
   MessageImage
 } from "@/types"
+import { LlamaForCausalLM } from "@xenova/transformers"
 import React from "react"
 import { toast } from "sonner"
 import { v4 as uuidv4 } from "uuid"
@@ -224,7 +226,6 @@ export const handleHostedChat = async (
 
   const apiEndpoint =
     provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`
-
   const requestBody = {
     chatSettings: payload.chatSettings,
     messages: formattedMessages,

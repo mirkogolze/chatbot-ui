@@ -49,18 +49,14 @@ export async function buildFinalMessages(
     chatSettings.includeWorkspaceInstructions ? workspaceInstructions : "",
     assistant
   )
-
+  const BUILD_PROMPT_TOKENS = encode(BUILT_PROMPT).length
   const CHUNK_SIZE = chatSettings.contextLength
   const PROMPT_TOKENS = encode(chatSettings.prompt).length
 
-  let remainingTokens = CHUNK_SIZE - PROMPT_TOKENS
-
-  let usedTokens = 0
-  usedTokens += PROMPT_TOKENS
+  let remainingTokens = CHUNK_SIZE - PROMPT_TOKENS - BUILD_PROMPT_TOKENS
 
   const processedChatMessages = chatMessages.map((chatMessage, index) => {
     const nextChatMessage = chatMessages[index + 1]
-
     if (nextChatMessage === undefined) {
       return chatMessage
     }
@@ -74,8 +70,10 @@ export async function buildFinalMessages(
         )
         .filter(item => item !== undefined) as Tables<"file_items">[]
 
-      const retrievalText = buildRetrievalText(findFileItems)
-
+      const [retrievalText, totalTokens] = buildRetrievalText(
+        findFileItems,
+        remainingTokens
+      )
       return {
         message: {
           ...chatMessage.message,
@@ -91,19 +89,6 @@ export async function buildFinalMessages(
 
   let finalMessages = []
 
-  for (let i = processedChatMessages.length - 1; i >= 0; i--) {
-    const message = processedChatMessages[i].message
-    const messageTokens = encode(message.content).length
-
-    if (messageTokens <= remainingTokens) {
-      remainingTokens -= messageTokens
-      usedTokens += messageTokens
-      finalMessages.unshift(message)
-    } else {
-      break
-    }
-  }
-
   let tempSystemMessage: Tables<"messages"> = {
     chat_id: "",
     assistant_id: null,
@@ -116,6 +101,28 @@ export async function buildFinalMessages(
     sequence_number: processedChatMessages.length,
     updated_at: "",
     user_id: ""
+  }
+  let additionalText = ""
+
+  if (messageFileItems.length > 0) {
+    const [retrievalText, totalTokens] = buildRetrievalText(
+      messageFileItems,
+      remainingTokens
+    )
+    remainingTokens = remainingTokens - totalTokens
+    additionalText = retrievalText
+  }
+
+  for (let i = processedChatMessages.length - 1; i >= 0; i--) {
+    const message = processedChatMessages[i].message
+    const messageTokens = encode(message.content).length
+
+    if (messageTokens <= remainingTokens) {
+      remainingTokens -= messageTokens
+      finalMessages.unshift(message)
+    } else {
+      break
+    }
   }
 
   finalMessages.unshift(tempSystemMessage)
@@ -157,27 +164,36 @@ export async function buildFinalMessages(
       content
     }
   })
-
-  if (messageFileItems.length > 0) {
-    const retrievalText = buildRetrievalText(messageFileItems)
-
+  if (additionalText.length != 0) {
     finalMessages[finalMessages.length - 1] = {
       ...finalMessages[finalMessages.length - 1],
       content: `${
         finalMessages[finalMessages.length - 1].content
-      }\n\n${retrievalText}`
+      }\n\n${additionalText}`
     }
   }
 
   return finalMessages
 }
 
-function buildRetrievalText(fileItems: Tables<"file_items">[]) {
-  const retrievalText = fileItems
-    .map(item => `<BEGIN SOURCE>\n${item.content}\n</END SOURCE>`)
-    .join("\n\n")
+function buildRetrievalText(
+  fileItems: Tables<"file_items">[],
+  remainingTokens: number
+): [string, number] {
+  const retrievalText: string[] = []
+  let totalTokens: number = 0
+  for (let item of fileItems) {
+    if (remainingTokens < totalTokens + item.tokens + 10) {
+      break
+    }
+    totalTokens += item.tokens + 10
+    retrievalText.push(`<BEGIN SOURCE>\n${item.content}\n</END SOURCE>`)
+  }
 
-  return `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know."\n\n${retrievalText}`
+  return [
+    `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know."\n\n${retrievalText.join("\n\n")}`,
+    totalTokens
+  ]
 }
 
 export async function buildGoogleGeminiFinalMessages(
