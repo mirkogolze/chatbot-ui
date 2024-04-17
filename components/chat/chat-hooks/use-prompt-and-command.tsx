@@ -26,7 +26,9 @@ export const usePromptAndCommand = () => {
     setIsAssistantPickerOpen,
     setSelectedAssistant,
     setChatSettings,
-    setChatFiles
+    setChatFiles,
+    setIsVectorPickerOpen,
+    setDollorCommand
   } = useContext(ChatbotUIContext)
 
   const handleInputChange = (value: string) => {
@@ -34,10 +36,12 @@ export const usePromptAndCommand = () => {
     const slashTextRegex = /\/([^ ]*)$/
     const hashtagTextRegex = /#([^ ]*)$/
     const toolTextRegex = /!([^ ]*)$/
+    const vectorsTextRegex = /\$([^ ]*)$/
     const atMatch = value.match(atTextRegex)
     const slashMatch = value.match(slashTextRegex)
     const hashtagMatch = value.match(hashtagTextRegex)
     const toolMatch = value.match(toolTextRegex)
+    const dollorMatch = value.match(vectorsTextRegex)
 
     if (atMatch) {
       setIsAssistantPickerOpen(true)
@@ -51,15 +55,20 @@ export const usePromptAndCommand = () => {
     } else if (toolMatch) {
       setIsToolPickerOpen(true)
       setToolCommand(toolMatch[1])
+    } else if (dollorMatch) {
+      setIsVectorPickerOpen(true)
+      setDollorCommand(dollorMatch[1])
     } else {
       setIsPromptPickerOpen(false)
       setIsFilePickerOpen(false)
       setIsToolPickerOpen(false)
       setIsAssistantPickerOpen(false)
+      setIsVectorPickerOpen(false)
       setSlashCommand("")
       setHashtagCommand("")
       setToolCommand("")
       setAtCommand("")
+      setDollorCommand("")
     }
 
     setUserInput(value)
@@ -68,6 +77,11 @@ export const usePromptAndCommand = () => {
   const handleSelectPrompt = (prompt: Tables<"prompts">) => {
     setIsPromptPickerOpen(false)
     setUserInput(userInput.replace(/\/[^ ]*$/, "") + prompt.content)
+  }
+  const hadleSelectVectors = (vector: Tables<"vectors">) => {
+    setIsVectorPickerOpen(false)
+    setUseRetrieval(true)
+    setUserInput(userInput.replace(/\$[^ ]*$/, ""))
   }
 
   const handleSelectUserFile = async (file: Tables<"files">) => {

@@ -20,10 +20,12 @@ export interface SearchResult {
 }
 
 export class qDrant {
-  private qclient: QdrantClient
+  public qclient: QdrantClient
 
   constructor() {
-    this.qclient = new QdrantClient({ url: process.env.QDRANT_URL })
+    this.qclient = new QdrantClient({
+      url: process.env.NEXT_PUBLIC_QDRANT_URL!
+    })
   }
   public async addEmbeddings(
     user_id: string,
@@ -90,3 +92,5 @@ export class qDrant {
     })
   }
 }
+
+export const qclient = new qDrant()

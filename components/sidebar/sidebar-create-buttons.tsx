@@ -7,6 +7,7 @@ import { FC, useContext, useState } from "react"
 import { Button } from "../ui/button"
 import { CreateAssistant } from "./items/assistants/create-assistant"
 import { CreateCollection } from "./items/collections/create-collection"
+import { CreateQdrant } from "./items/qdrant/create-qdrant"
 import { CreateFile } from "./items/files/create-file"
 import { CreateModel } from "./items/models/create-model"
 import { CreatePreset } from "./items/presets/create-preset"
@@ -33,6 +34,7 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
   const [isCreatingAssistant, setIsCreatingAssistant] = useState(false)
   const [isCreatingTool, setIsCreatingTool] = useState(false)
   const [isCreatingModel, setIsCreatingModel] = useState(false)
+  const [isCreatingQdrant, setIsCreatingQdrant] = useState(false)
 
   const handleCreateFolder = async () => {
     if (!profile) return
@@ -89,6 +91,10 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
         return async () => {
           setIsCreatingModel(true)
         }
+      case "vectors":
+        return async () => {
+          setIsCreatingQdrant(true)
+        }
 
       default:
         break
@@ -99,7 +105,6 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
     <div className="flex w-full space-x-2">
       <Button className="flex h-[36px] grow" onClick={getCreateFunction()}>
         <IconPlus className="mr-1" size={20} />
-        New{" "}
         {contentType.charAt(0).toUpperCase() +
           contentType.slice(1, contentType.length - 1)}
       </Button>
@@ -150,6 +155,13 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
         <CreateModel
           isOpen={isCreatingModel}
           onOpenChange={setIsCreatingModel}
+        />
+      )}
+
+      {isCreatingQdrant && (
+        <CreateQdrant
+          isOpen={isCreatingQdrant}
+          onOpenChange={setIsCreatingQdrant}
         />
       )}
     </div>

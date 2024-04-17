@@ -562,6 +562,94 @@ export type Database = {
           },
         ]
       }
+      vector_workspaces : {
+        Row: {
+          qdrant_id: string
+          created_at: string
+          updated_at: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          qdrant_id: string
+          created_at?: string
+          updated_at?: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          qdrant_id?: string
+          created_at?: string
+          updated_at?: string | null
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qdrant_workspaces_qdrant_id_fkey"
+            columns: ["qdrant_id"]
+            isOneToOne: false
+            referencedRelation: "vectors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qdrant_workspaces_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qadrant_workspaces_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vectors : {
+        Row: {
+          id: string
+          created_at: string
+          name: string
+          user_id: string
+          folder_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          name?: string
+          user_id?: string
+          folder_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          name?: string
+          user_id?: string
+          folder_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships : [
+          {
+            foreignKeyName: "qdrant_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "folders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qdrant_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       file_items: {
         Row: {
           content: string

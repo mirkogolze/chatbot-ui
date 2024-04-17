@@ -74,6 +74,11 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           contentType="tools"
           onContentTypeChange={onContentTypeChange}
         />
+        <SidebarSwitchItem
+          icon={<IconBooks size={SIDEBAR_ICON_SIZE} />}
+          contentType="vectors"
+          onContentTypeChange={onContentTypeChange}
+        />
       </TabsList>
 
       <div className="flex flex-col items-center space-y-4">

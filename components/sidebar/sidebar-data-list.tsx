@@ -2,6 +2,7 @@ import { ChatbotUIContext } from "@/context/context"
 import { updateAssistant } from "@/db/assistants"
 import { updateChat } from "@/db/chats"
 import { updateCollection } from "@/db/collections"
+import { updateQdrant } from "@/db/qdrant"
 import { updateFile } from "@/db/files"
 import { updateModel } from "@/db/models"
 import { updatePreset } from "@/db/presets"
@@ -21,6 +22,7 @@ import { ModelItem } from "./items/models/model-item"
 import { PresetItem } from "./items/presets/preset-item"
 import { PromptItem } from "./items/prompts/prompt-item"
 import { ToolItem } from "./items/tools/tool-item"
+import { QdrantItem } from "./items/qdrant/qdrant-item"
 
 interface SidebarDataListProps {
   contentType: ContentType
@@ -41,7 +43,8 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
     setCollections,
     setAssistants,
     setTools,
-    setModels
+    setModels,
+    setVectors
   } = useContext(ChatbotUIContext)
 
   const divRef = useRef<HTMLDivElement>(null)
@@ -87,6 +90,8 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
 
       case "models":
         return <ModelItem key={item.id} model={item as Tables<"models">} />
+      case "vectors":
+        return <QdrantItem key={item.id} vectors={item as Tables<"vectors">} />
 
       default:
         return null
@@ -140,7 +145,8 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
     collections: updateCollection,
     assistants: updateAssistant,
     tools: updateTool,
-    models: updateModel
+    models: updateModel,
+    vectors: updateQdrant
   }
 
   const stateUpdateFunctions = {
@@ -151,7 +157,8 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels
+    models: setModels,
+    vectors: setVectors
   }
 
   const updateFolder = async (itemId: string, folderId: string | null) => {

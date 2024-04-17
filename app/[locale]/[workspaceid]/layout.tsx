@@ -3,6 +3,7 @@
 import { Dashboard } from "@/components/ui/dashboard"
 import { ChatbotUIContext } from "@/context/context"
 import { getAssistantWorkspacesByWorkspaceId } from "@/db/assistants"
+import { getQdrantWorkspacesByWorkspaceId } from "@/db/qdrant"
 import { getChatsByWorkspaceId } from "@/db/chats"
 import { getCollectionWorkspacesByWorkspaceId } from "@/db/collections"
 import { getFileWorkspacesByWorkspaceId } from "@/db/files"
@@ -36,6 +37,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     setAssistantImages,
     setChats,
     setCollections,
+    setVectors,
     setFolders,
     setFiles,
     setPresets,
@@ -136,7 +138,8 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     const collectionData =
       await getCollectionWorkspacesByWorkspaceId(workspaceId)
     setCollections(collectionData.collections)
-
+    const qdrantDrata = await getQdrantWorkspacesByWorkspaceId(workspaceId)
+    setVectors(qdrantDrata.vectors)
     const folders = await getFoldersByWorkspaceId(workspaceId)
     setFolders(folders)
 

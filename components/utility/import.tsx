@@ -6,6 +6,7 @@ import { createFiles } from "@/db/files"
 import { createPresets } from "@/db/presets"
 import { createPrompts } from "@/db/prompts"
 import { createTools } from "@/db/tools"
+import { createQdrants } from "@/db/qdrant"
 import { IconUpload, IconX } from "@tabler/icons-react"
 import { FC, useContext, useRef, useState } from "react"
 import { toast } from "sonner"
@@ -33,7 +34,8 @@ export const Import: FC<ImportProps> = ({}) => {
     setFiles,
     setCollections,
     setAssistants,
-    setTools
+    setTools,
+    setVectors
   } = useContext(ChatbotUIContext)
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -66,7 +68,8 @@ export const Import: FC<ImportProps> = ({}) => {
     files: setFiles,
     collections: setCollections,
     assistants: setAssistants,
-    tools: setTools
+    tools: setTools,
+    qdrant: setVectors
   }
 
   const handleSelectFiles = async (e: any) => {
@@ -104,7 +107,8 @@ export const Import: FC<ImportProps> = ({}) => {
           "prompts",
           "files",
           "collections",
-          "assistants"
+          "assistants",
+          "vectors"
         ]
         const newCounts: any = { ...prevCounts }
         countTypes.forEach(type => {
@@ -177,7 +181,8 @@ export const Import: FC<ImportProps> = ({}) => {
         saveData.assistants,
         selectedWorkspace.id
       ),
-      tools: await createTools(saveData.tools, selectedWorkspace.id)
+      tools: await createTools(saveData.tools, selectedWorkspace.id),
+      qdrant: await createQdrants(saveData.vectors, selectedWorkspace.id)
     }
 
     Object.keys(createdItems).forEach(key => {

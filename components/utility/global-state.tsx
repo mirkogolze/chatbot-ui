@@ -41,6 +41,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   // ITEMS STORE
   const [assistants, setAssistants] = useState<Tables<"assistants">[]>([])
   const [collections, setCollections] = useState<Tables<"collections">[]>([])
+  const [vectors, setVectors] = useState<Tables<"vectors">[]>([])
   const [chats, setChats] = useState<Tables<"chats">[]>([])
   const [files, setFiles] = useState<Tables<"files">[]>([])
   const [folders, setFolders] = useState<Tables<"folders">[]>([])
@@ -99,6 +100,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [slashCommand, setSlashCommand] = useState("")
   const [isFilePickerOpen, setIsFilePickerOpen] = useState(false)
   const [hashtagCommand, setHashtagCommand] = useState("")
+  const [isVectorPickerOpen, setIsVectorPickerOpen] = useState(false)
+  const [dollorCommand, setDollorCommand] = useState("")
+
   const [isToolPickerOpen, setIsToolPickerOpen] = useState(false)
   const [toolCommand, setToolCommand] = useState("")
   const [focusPrompt, setFocusPrompt] = useState(false)
@@ -225,6 +229,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setTools,
         workspaces,
         setWorkspaces,
+        vectors,
+        setVectors,
 
         // MODELS STORE
         envKeyMap,
@@ -281,6 +287,10 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setSlashCommand,
         isFilePickerOpen,
         setIsFilePickerOpen,
+        isVectorPickerOpen,
+        setIsVectorPickerOpen,
+        dollorCommand,
+        setDollorCommand,
         hashtagCommand,
         setHashtagCommand,
         isToolPickerOpen,

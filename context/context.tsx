@@ -38,6 +38,8 @@ interface ChatbotUIContext {
   setTools: Dispatch<SetStateAction<Tables<"tools">[]>>
   workspaces: Tables<"workspaces">[]
   setWorkspaces: Dispatch<SetStateAction<Tables<"workspaces">[]>>
+  vectors: Tables<"vectors">[]
+  setVectors: Dispatch<SetStateAction<Tables<"vectors">[]>>
 
   // MODELS STORE
   envKeyMap: Record<string, VALID_ENV_KEYS>
@@ -95,6 +97,10 @@ interface ChatbotUIContext {
   isFilePickerOpen: boolean
   setIsFilePickerOpen: Dispatch<SetStateAction<boolean>>
   hashtagCommand: string
+  setIsVectorPickerOpen: Dispatch<SetStateAction<boolean>>
+  dollorCommand: string
+  setDollorCommand: Dispatch<SetStateAction<string>>
+  isVectorPickerOpen: boolean
   setHashtagCommand: Dispatch<SetStateAction<string>>
   isToolPickerOpen: boolean
   setIsToolPickerOpen: Dispatch<SetStateAction<boolean>>
@@ -164,6 +170,8 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setTools: () => {},
   workspaces: [],
   setWorkspaces: () => {},
+  vectors: [],
+  setVectors: () => {},
 
   // MODELS STORE
   envKeyMap: {},
@@ -222,6 +230,10 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setIsFilePickerOpen: () => {},
   hashtagCommand: "",
   setHashtagCommand: () => {},
+  dollorCommand: "",
+  setDollorCommand: () => {},
+  isVectorPickerOpen: false,
+  setIsVectorPickerOpen: () => {},
   isToolPickerOpen: false,
   setIsToolPickerOpen: () => {},
   toolCommand: "",

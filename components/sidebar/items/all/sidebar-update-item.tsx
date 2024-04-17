@@ -77,6 +77,13 @@ import {
   getToolWorkspacesByToolId,
   updateTool
 } from "@/db/tools"
+import {
+  createQdrantWorkspaces,
+  deleteQdrantWorkspace,
+  getQdrantWorkspacesByQdrantId,
+  updateQdrant
+} from "@/db/qdrant"
+
 import { convertBlobToBase64 } from "@/lib/blob-to-b64"
 import { Tables, TablesUpdate } from "@/supabase/types"
 import { CollectionFile, ContentType, DataItemType } from "@/types"
@@ -113,7 +120,8 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     setAssistants,
     setTools,
     setModels,
-    setAssistantImages
+    setAssistantImages,
+    setVectors
   } = useContext(ChatbotUIContext)
 
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -195,6 +203,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
       selectedAssistantTools,
       setSelectedAssistantTools
     },
+    vectors: null,
     tools: null,
     models: null
   }
@@ -225,6 +234,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
       setSelectedAssistantCollections([])
       setSelectedAssistantTools([])
     },
+    vectors: null,
     tools: null,
     models: null
   }
@@ -257,6 +267,10 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     },
     models: async (modelId: string) => {
       const item = await getModelWorkspacesByModelId(modelId)
+      return item.workspaces
+    },
+    vectors: async (qdrantId: string) => {
+      const item = await getQdrantWorkspacesByQdrantId(qdrantId)
       return item.workspaces
     }
   }
@@ -411,6 +425,27 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
         deleteCollectionWorkspace,
         createCollectionWorkspaces as any,
         "collection_id"
+      )
+
+      return updatedCollection
+    },
+    vectors: async (
+      qdrantId: string,
+      updateState: TablesUpdate<"assistants">
+    ) => {
+      if (!profile) return
+
+      const { ...rest } = updateState
+
+      const updatedCollection = await updateQdrant(qdrantId, rest)
+
+      await handleWorkspaceUpdates(
+        startingWorkspaces,
+        selectedWorkspaces,
+        qdrantId,
+        deleteCollectionWorkspace,
+        createCollectionWorkspaces as any,
+        "qdrant_id"
       )
 
       return updatedCollection
@@ -579,7 +614,8 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels
+    models: setModels,
+    vectors: setVectors
   }
 
   const handleUpdate = async () => {
