@@ -46,6 +46,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
     focusFile,
     focusTool,
     setIsVectorPickerOpen,
+    isVectorPickerOpen,
     setFocusTool,
     isToolPickerOpen,
     isPromptPickerOpen,
@@ -94,7 +95,8 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
       isPromptPickerOpen ||
       isFilePickerOpen ||
       isToolPickerOpen ||
-      isAssistantPickerOpen
+      isAssistantPickerOpen ||
+      isVectorPickerOpen
     ) {
       if (
         event.key === "Tab" ||
@@ -106,6 +108,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
         if (isPromptPickerOpen) setFocusPrompt(!focusPrompt)
         if (isFilePickerOpen) setFocusFile(!focusFile)
         if (isToolPickerOpen) setFocusTool(!focusTool)
+        if (isAssistantPickerOpen) setFocusAssistant(!focusAssistant)
         if (isAssistantPickerOpen) setFocusAssistant(!focusAssistant)
       }
     }

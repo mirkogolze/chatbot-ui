@@ -101,6 +101,8 @@ interface ChatbotUIContext {
   dollorCommand: string
   setDollorCommand: Dispatch<SetStateAction<string>>
   isVectorPickerOpen: boolean
+  focusVector: boolean
+  setFocusVector: Dispatch<SetStateAction<boolean>>
   setHashtagCommand: Dispatch<SetStateAction<string>>
   isToolPickerOpen: boolean
   setIsToolPickerOpen: Dispatch<SetStateAction<boolean>>
@@ -236,6 +238,8 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setIsVectorPickerOpen: () => {},
   isToolPickerOpen: false,
   setIsToolPickerOpen: () => {},
+  focusVector: false,
+  setFocusVector: () => {},
   toolCommand: "",
   setToolCommand: () => {},
   focusPrompt: false,
