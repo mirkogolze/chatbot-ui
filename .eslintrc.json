@@ -21,6 +21,5 @@
       "files": ["*.ts", "*.tsx"],
       "parser": "@typescript-eslint/parser"
     }
-  ],
-  "ignorePatterns": ["*/lang-detect.ts"]
+  ]
 }

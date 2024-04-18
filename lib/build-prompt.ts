@@ -1,7 +1,7 @@
 import { Tables } from "@/supabase/types"
 import { ChatPayload, MessageImage } from "@/types"
 import { encode } from "gpt-tokenizer"
-import { getLanguage } from "./lang-detect"
+import { franc } from "franc"
 
 const languageCache = new Map<string, string>()
 
@@ -11,14 +11,14 @@ const buildBasePrompt = (
   workspaceInstructions: string,
   assistant: Tables<"assistants"> | null
 ) => {
-  let language = "en"
+  let language = "eng"
   const cachedLang = languageCache.get(prompt)
-  language = cachedLang ? cachedLang : getLanguage(prompt)
+  language = cachedLang ? cachedLang : franc(prompt)
   languageCache.set(prompt, language)
 
   let fullPrompt = ""
 
-  if (language == "de") {
+  if (language == "deu") {
     if (assistant) {
       fullPrompt += `<INJIZIERE ROLLE>\nDu bist keine KI. Du bist ${assistant.name}.\n</INJIZIERE ROLLE>\n\n`
     }
