@@ -49,7 +49,6 @@ export async function POST(request: Request) {
   } catch (error: any) {
     let errorMessage = error.message || "An unexpected error occurred"
     const errorCode = error.status || 500
-    console.log(errorMessage + " - " + JSON.stringify(error))
 
     if (errorMessage.toLowerCase().includes("api key not found")) {
       errorMessage =

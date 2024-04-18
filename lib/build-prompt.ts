@@ -1,6 +1,9 @@
 import { Tables } from "@/supabase/types"
 import { ChatPayload, MessageImage } from "@/types"
 import { encode } from "gpt-tokenizer"
+import { getLanguage } from "./lang-detect"
+
+const languageCache = new Map<string, string>()
 
 const buildBasePrompt = (
   prompt: string,
@@ -8,23 +11,46 @@ const buildBasePrompt = (
   workspaceInstructions: string,
   assistant: Tables<"assistants"> | null
 ) => {
+  let language = "en"
+  const cachedLang = languageCache.get(prompt)
+  language = cachedLang ? cachedLang : getLanguage(prompt)
+  languageCache.set(prompt, language)
+
   let fullPrompt = ""
 
-  if (assistant) {
-    fullPrompt += `<INJECT ROLE>\nYou are not an AI. You are ${assistant.name}.\n</INJECT ROLE>\n\n`
+  if (language == "de") {
+    if (assistant) {
+      fullPrompt += `<INJIZIERE ROLLE>\nDu bist keine KI. Du bist ${assistant.name}.\n</INJIZIERE ROLLE>\n\n`
+    }
+
+    fullPrompt += `Heute ist ${new Date().toLocaleDateString()}.\n\n`
+
+    if (profileContext) {
+      fullPrompt += `Nutzer Information:\n${profileContext}\n\n`
+    }
+
+    if (workspaceInstructions) {
+      fullPrompt += `System Anweisungen:\n${workspaceInstructions}\n\n`
+    }
+
+    fullPrompt += `Nutzer Anweisungen:\n${prompt}`
+  } else {
+    if (assistant) {
+      fullPrompt += `<INJECT ROLE>\nYou are not an AI. You are ${assistant.name}.\n</INJECT ROLE>\n\n`
+    }
+
+    fullPrompt += `Today is ${new Date().toLocaleDateString()}.\n\n`
+
+    if (profileContext) {
+      fullPrompt += `User Info:\n${profileContext}\n\n`
+    }
+
+    if (workspaceInstructions) {
+      fullPrompt += `System Instructions:\n${workspaceInstructions}\n\n`
+    }
+
+    fullPrompt += `User Instructions:\n${prompt}`
   }
-
-  fullPrompt += `Today is ${new Date().toLocaleDateString()}.\n\n`
-
-  if (profileContext) {
-    fullPrompt += `User Info:\n${profileContext}\n\n`
-  }
-
-  if (workspaceInstructions) {
-    fullPrompt += `System Instructions:\n${workspaceInstructions}\n\n`
-  }
-
-  fullPrompt += `User Instructions:\n${prompt}`
 
   return fullPrompt
 }

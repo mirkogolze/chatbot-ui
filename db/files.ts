@@ -100,7 +100,7 @@ export const createFile = async (
     | "multilingual-e5-large"
     | "multilingual-e5-small"
 ) => {
-  let validFilename = fileRecord.name.replace(/[^a-z0-9.]/gi, "_").toLowerCase()
+  let validFilename = file.name.replace(/[^a-z0-9.]/gi, "_")
   const extension = file.name.split(".").pop()
   const baseName = validFilename.substring(0, validFilename.lastIndexOf("."))
   const maxBaseNameLength = 100 - (extension?.length || 0) - 1
@@ -303,6 +303,12 @@ export const updateFile = async (
 }
 
 export const deleteFile = async (fileId: string) => {
+  const { error } = await supabase.from("files").delete().eq("id", fileId)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
   qclient.deleteFile(
     (await supabase.auth.getUser()).data.user?.id || "",
     fileId
