@@ -22,8 +22,6 @@ COPY --from=build --chown=node:node /app/public ./public
 COPY --from=build --chown=node:node /app/.next ./.next
 COPY --from=build --chown=node:node /app/package.json ./
 COPY --from=build --chown=node:node /app/next.config.js ./
-COPY --from=build --chown=node:node /app/.env.local ./
-
 
 ENV NODE_ENV=production
 
