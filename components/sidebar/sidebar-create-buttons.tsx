@@ -109,7 +109,7 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
           contentType.slice(1, contentType.length - 1)}
       </Button>
 
-      {hasData && (
+      {hasData && contentType!="files" && (
         <Button className="size-[36px] p-1" onClick={handleCreateFolder}>
           <IconFolderPlus size={20} />
         </Button>

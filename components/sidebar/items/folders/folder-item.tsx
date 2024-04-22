@@ -90,7 +90,7 @@ export const Folder: FC<FolderProps> = ({
             <div>{folder.name}</div>
           </div>
 
-          {isHovering && (
+          {isHovering && contentType !="files" && (
             <div
               onClick={e => {
                 e.stopPropagation()
