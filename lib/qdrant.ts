@@ -31,12 +31,13 @@ export class qDrant {
     user_id: string,
     embeddings: number[][],
     file_id: string,
-    chunks: FileItemChunk[]
+    chunks: FileItemChunk[],
+    embeddingsProvider: string
   ): Promise<FileItem[]> {
     try {
-      await this.qclient.getCollection(user_id)
+      await this.qclient.getCollection(user_id + embeddingsProvider)
     } catch {
-      await this.qclient.createCollection(user_id, {
+      await this.qclient.createCollection(user_id + embeddingsProvider, {
         vectors: { size: embeddings[0].length, distance: "Cosine" }
       })
     }
@@ -49,14 +50,18 @@ export class qDrant {
         content: chunk.content
       }
     }))
-    this.qclient.upsert(user_id, { wait: true, points: file_items })
+    this.qclient.upsert(user_id + embeddingsProvider, {
+      wait: true,
+      points: file_items
+    })
     return file_items
   }
   public async searchEmbeddings(
     uniqueFileIds: string[],
     uniqueVectorNames: string[],
     user_id: string,
-    localEmbedding: number[]
+    localEmbedding: number[],
+    embeddingsProvider: string
   ): Promise<SearchResult[]> {
     let result: any[] = []
     if (uniqueFileIds.length != 0) {
@@ -64,14 +69,13 @@ export class qDrant {
         key: "file_id",
         match: { value: x }
       }))
-      result = await this.qclient.search(user_id, {
+      result = await this.qclient.search(user_id + embeddingsProvider, {
         vector: localEmbedding,
         filter: {
           should: should
         },
         with_payload: true
       })
-    } else {
     }
 
     for (const collection_name of uniqueVectorNames) {

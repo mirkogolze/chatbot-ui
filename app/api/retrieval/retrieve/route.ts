@@ -86,7 +86,8 @@ export async function POST(request: Request) {
           uniqueFileIds,
           uniqueVectorNames,
           profile.user_id,
-          localEmbedding
+          localEmbedding,
+          embeddingsProvider
         )
       } else {
         const { data: localFileItems, error: localFileItemsError } =
@@ -121,7 +122,8 @@ export async function POST(request: Request) {
           uniqueFileIds,
           uniqueVectorNames,
           profile.user_id,
-          openaiEmbedding
+          openaiEmbedding,
+          embeddingsProvider
         )
       } else {
         const { data: openaiFileItems, error: openaiError } =

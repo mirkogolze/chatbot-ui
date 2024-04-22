@@ -47,7 +47,8 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
           file_path: "",
           size: selectedFile?.size || 0,
           tokens: 0,
-          type: selectedFile?.type || 0
+          type: selectedFile?.type || 0,
+          embeddings_provider: ""
         } as TablesInsert<"files">
       }
       isOpen={isOpen}

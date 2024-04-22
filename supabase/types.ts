@@ -764,6 +764,7 @@ export type Database = {
           type: string
           updated_at: string | null
           user_id: string
+          embeddings_provider: string
         }
         Insert: {
           created_at?: string
@@ -778,6 +779,7 @@ export type Database = {
           type: string
           updated_at?: string | null
           user_id: string
+          embeddings_provider: string
         }
         Update: {
           created_at?: string
@@ -792,6 +794,7 @@ export type Database = {
           type?: string
           updated_at?: string | null
           user_id?: string
+          embeddings_provider?: string
         }
         Relationships: [
           {
