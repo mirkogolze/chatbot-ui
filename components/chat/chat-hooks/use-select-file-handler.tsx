@@ -102,7 +102,8 @@ export const useSelectFileHandler = () => {
               name: file.name,
               size: file.size,
               tokens: 0,
-              type: simplifiedFileType
+              type: simplifiedFileType,
+              embeddings_provider:chatSettings.embeddingsProvider
             },
             selectedWorkspace.id,
             chatSettings.embeddingsProvider
@@ -163,7 +164,8 @@ export const useSelectFileHandler = () => {
                 name: file.name,
                 size: file.size,
                 tokens: 0,
-                type: simplifiedFileType
+                type: simplifiedFileType,
+                embeddings_provider: chatSettings.embeddingsProvider
               },
               selectedWorkspace.id,
               chatSettings.embeddingsProvider

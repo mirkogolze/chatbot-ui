@@ -25,7 +25,7 @@ export const FilePicker: FC<FilePickerProps> = ({
   onSelectCollection,
   isFocused
 }) => {
-  const { files, collections, setIsFilePickerOpen } =
+  const { files, collections, setIsFilePickerOpen,chatSettings } =
     useContext(ChatbotUIContext)
 
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
@@ -39,7 +39,8 @@ export const FilePicker: FC<FilePickerProps> = ({
   const filteredFiles = files.filter(
     file =>
       file.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !selectedFileIds.includes(file.id)
+      !selectedFileIds.includes(file.id) &&
+      file.embeddings_provider == chatSettings!.embeddingsProvider
   )
 
   const filteredCollections = collections.filter(

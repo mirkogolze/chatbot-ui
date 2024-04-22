@@ -161,7 +161,8 @@ export async function POST(req: Request) {
         profile.user_id,
         embeddings,
         file_id,
-        chunks
+        chunks,
+        embeddingsProvider
       )
       totalTokens = file_items.reduce(
         (acc, item) => acc + item.payload.tokens,

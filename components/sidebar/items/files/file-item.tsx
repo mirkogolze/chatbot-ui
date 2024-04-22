@@ -43,6 +43,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
             <div>{formatFileSize(file.size)}</div>
 
             <div>{file.tokens.toLocaleString()} tokens</div>
+            <div>{file.embeddings_provider}</div>
           </div>
 
           <div className="space-y-1">
