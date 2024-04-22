@@ -220,24 +220,30 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
       )
     }
   }, [data])
-  let dataWithFolders: any[] = [];
-  let dataWithoutFolders:any[] = [];
-  if(contentType == "files"){
-    const embeddingNames = [...(new Set((data as Tables<"files">[]).map((item)=>{return item.embeddings_provider})))]
-    folders = embeddingNames.map( id=>{
+  let dataWithFolders: any[] = []
+  let dataWithoutFolders: any[] = []
+  if (contentType == "files") {
+    const embeddingNames = [
+      ...new Set(
+        (data as Tables<"files">[]).map(item => {
+          return item.embeddings_provider
+        })
+      )
+    ]
+    folders = embeddingNames.map(id => {
       return {
-        "created_at": "",
-        "description": "",
-        "id": id,
-        "name": id,
-        "type": contentType,
-        "user_id":"",
-        "workspace_id":"",
-        updated_at:""
-      };}
-    );
-    dataWithFolders = data;
-  }else{
+        created_at: "",
+        description: "",
+        id: id,
+        name: id,
+        type: contentType,
+        user_id: "",
+        workspace_id: "",
+        updated_at: ""
+      }
+    })
+    dataWithFolders = data
+  } else {
     dataWithFolders = data.filter(item => item.folder_id)
     dataWithoutFolders = data.filter(item => item.folder_id === null)
   }
@@ -263,46 +269,43 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
               isOverflowing ? "w-[calc(100%-8px)]" : "w-full"
             } space-y-2 pt-2 ${isOverflowing ? "mr-2" : ""}`}
           >
-            {contentType == "files" ?
-            folders.map(folder => (
-              <Folder
-                key={folder.id}
-                folder={folder}
-                onUpdateFolder={()=>{}}
-                contentType={contentType}
-              >
-                {dataWithFolders
-                  .filter(item => item.embeddings_provider === folder.id)
-                  .map(item => (
-                    <div
-                      key={item.id}
-                    >
-                      {getDataListComponent(contentType, item)}
-                    </div>
-                  ))}
-              </Folder>)
-            )
-            :folders.map(folder => (
-
-              <Folder
-                key={folder.id}
-                folder={folder}
-                onUpdateFolder={updateFolder}
-                contentType={contentType}
-              >
-                {dataWithFolders
-                  .filter(item => item.folder_id === folder.id)
-                  .map(item => (
-                    <div
-                      key={item.id}
-                      draggable
-                      onDragStart={e => handleDragStart(e, item.id)}
-                    >
-                      {getDataListComponent(contentType, item)}
-                    </div>
-                  ))}
-              </Folder>
-            ))}
+            {contentType == "files"
+              ? folders.map(folder => (
+                  <Folder
+                    key={folder.id}
+                    folder={folder}
+                    onUpdateFolder={() => {}}
+                    contentType={contentType}
+                  >
+                    {dataWithFolders
+                      .filter(item => item.embeddings_provider === folder.id)
+                      .map(item => (
+                        <div key={item.id}>
+                          {getDataListComponent(contentType, item)}
+                        </div>
+                      ))}
+                  </Folder>
+                ))
+              : folders.map(folder => (
+                  <Folder
+                    key={folder.id}
+                    folder={folder}
+                    onUpdateFolder={updateFolder}
+                    contentType={contentType}
+                  >
+                    {dataWithFolders
+                      .filter(item => item.folder_id === folder.id)
+                      .map(item => (
+                        <div
+                          key={item.id}
+                          draggable
+                          onDragStart={e => handleDragStart(e, item.id)}
+                        >
+                          {getDataListComponent(contentType, item)}
+                        </div>
+                      ))}
+                  </Folder>
+                ))}
 
             {folders.length > 0 && <Separator />}
 

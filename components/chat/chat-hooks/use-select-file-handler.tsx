@@ -103,7 +103,7 @@ export const useSelectFileHandler = () => {
               size: file.size,
               tokens: 0,
               type: simplifiedFileType,
-              embeddings_provider:chatSettings.embeddingsProvider
+              embeddings_provider: chatSettings.embeddingsProvider
             },
             selectedWorkspace.id,
             chatSettings.embeddingsProvider
