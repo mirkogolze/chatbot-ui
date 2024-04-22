@@ -8,17 +8,18 @@ import { qDrant } from "@/lib/qdrant"
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const { userInput, fileIds,vectorNames, embeddingsProvider, sourceCount } = json as {
-    userInput: string
-    fileIds: string[]
-    vectorNames: string[]
-    embeddingsProvider:
-      | "openai"
-      | "local"
-      | "multilingual-e5-large"
-      | "multilingual-e5-small"
-    sourceCount: number
-  }
+  const { userInput, fileIds, vectorNames, embeddingsProvider, sourceCount } =
+    json as {
+      userInput: string
+      fileIds: string[]
+      vectorNames: string[]
+      embeddingsProvider:
+        | "openai"
+        | "local"
+        | "multilingual-e5-large"
+        | "multilingual-e5-small"
+      sourceCount: number
+    }
 
   const uniqueFileIds = [...new Set(fileIds)]
   const uniqueVectorNames = [...new Set(vectorNames)]

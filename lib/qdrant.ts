@@ -54,12 +54,12 @@ export class qDrant {
   }
   public async searchEmbeddings(
     uniqueFileIds: string[],
-    uniqueVectorNames:string [],
+    uniqueVectorNames: string[],
     user_id: string,
     localEmbedding: number[]
   ): Promise<SearchResult[]> {
-    let result:any[] = [];
-    if(uniqueFileIds.length != 0){
+    let result: any[] = []
+    if (uniqueFileIds.length != 0) {
       const should = uniqueFileIds.map((x, index) => ({
         key: "file_id",
         match: { value: x }
@@ -71,15 +71,17 @@ export class qDrant {
         },
         with_payload: true
       })
-    }else{
-
+    } else {
     }
-    
-    for(const collection_name of uniqueVectorNames){
-      result = [...result, ...(await this.qclient.search(collection_name, {
-        vector: localEmbedding,
-        with_payload: true
-      }))]
+
+    for (const collection_name of uniqueVectorNames) {
+      result = [
+        ...result,
+        ...(await this.qclient.search(collection_name, {
+          vector: localEmbedding,
+          with_payload: true
+        }))
+      ]
     }
     const ret = result.map((tmpDct, index) => ({
       id: tmpDct.id,

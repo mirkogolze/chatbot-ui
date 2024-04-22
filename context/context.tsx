@@ -135,7 +135,7 @@ interface ChatbotUIContext {
   setShowFilesDisplay: Dispatch<SetStateAction<boolean>>
 
   chatVectors: ChatVector[]
-  setChatVectors:Dispatch<SetStateAction<ChatVector[]>>
+  setChatVectors: Dispatch<SetStateAction<ChatVector[]>>
   newMessageVectors: ChatVector[]
   setNewMessageVectors: Dispatch<SetStateAction<ChatVector[]>>
 
@@ -274,9 +274,9 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setShowFilesDisplay: () => {},
 
   chatVectors: [],
-  setChatVectors: ()=>{},
+  setChatVectors: () => {},
   newMessageVectors: [],
-  setNewMessageVectors: ()=>{},
+  setNewMessageVectors: () => {},
 
   // RETRIEVAL STORE
   useRetrieval: false,

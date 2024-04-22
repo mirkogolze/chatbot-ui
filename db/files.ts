@@ -309,7 +309,6 @@ export const deleteFile = async (fileId: string) => {
     throw new Error(error.message)
   }
 
-
   await fetch("/api/delete", {
     method: "POST",
     headers: {
@@ -320,7 +319,7 @@ export const deleteFile = async (fileId: string) => {
       fileId: fileId
     })
   })
-  
+
   return true
 }
 

@@ -91,7 +91,6 @@ export const useChatHandler = () => {
     setChatFileItems([])
     setChatVectors([])
 
-
     setIsGenerating(false)
     setFirstTokenReceived(false)
 
@@ -248,7 +247,10 @@ export const useChatHandler = () => {
       let retrievedFileItems: Tables<"file_items">[] = []
 
       if (
-        (newMessageFiles.length > 0 || chatFiles.length > 0 || newMessageVectors.length > 0 || chatVectors.length > 0) &&
+        (newMessageFiles.length > 0 ||
+          chatFiles.length > 0 ||
+          newMessageVectors.length > 0 ||
+          chatVectors.length > 0) &&
         useRetrieval
       ) {
         setToolInUse("retrieval")

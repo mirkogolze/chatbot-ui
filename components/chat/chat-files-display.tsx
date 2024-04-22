@@ -73,7 +73,11 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
     ...chatVectors
   ]
 
-  const combinedMessageFiles = [...messageImages, ...combinedChatFiles, ...combinedChatVectors]
+  const combinedMessageFiles = [
+    ...messageImages,
+    ...combinedChatFiles,
+    ...combinedChatVectors
+  ]
 
   const getLinkAndView = async (file: ChatFile) => {
     const fileRecord = files.find(f => f.id === file.id)
@@ -266,7 +270,9 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
                       setNewMessageVectors(
                         newMessageVectors.filter(f => f.id !== vector.id)
                       )
-                      setChatVectors(chatVectors.filter(f => f.id !== vector.id))
+                      setChatVectors(
+                        chatVectors.filter(f => f.id !== vector.id)
+                      )
                     }}
                   />
                 </div>

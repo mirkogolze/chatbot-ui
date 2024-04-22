@@ -21,8 +21,7 @@ export const VectorPicker: FC<VectorPickerProps> = ({
   onSelectVector,
   isFocused
 }) => {
-  const { vectors, setIsVectorPickerOpen } =
-    useContext(ChatbotUIContext)
+  const { vectors, setIsVectorPickerOpen } = useContext(ChatbotUIContext)
 
   const itemsRef = useRef<(HTMLDivElement | null)[]>([])
 
@@ -34,10 +33,9 @@ export const VectorPicker: FC<VectorPickerProps> = ({
 
   const filteredVectors = vectors.filter(
     vector =>
-        vector.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      vector.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
       !selectedVectorIds.includes(vector.id)
   )
-
 
   const handleOpenChange = (isOpen: boolean) => {
     onOpenChange(isOpen)
@@ -47,7 +45,6 @@ export const VectorPicker: FC<VectorPickerProps> = ({
     onSelectVector(vector)
     handleOpenChange(false)
   }
-
 
   const getKeyDownHandler =
     (index: number, type: "vector", item: any) =>
@@ -60,7 +57,6 @@ export const VectorPicker: FC<VectorPickerProps> = ({
       } else if (e.key === "Enter") {
         e.preventDefault()
         handleSelectVector(item)
-
       } else if (
         (e.key === "Tab" || e.key === "ArrowDown") &&
         !e.shiftKey &&
@@ -104,15 +100,8 @@ export const VectorPicker: FC<VectorPickerProps> = ({
                   className="hover:bg-accent focus:bg-accent flex cursor-pointer items-center rounded p-2 focus:outline-none"
                   onClick={() => {
                     handleSelectVector(item as Tables<"vectors">)
-
                   }}
-                  onKeyDown={e =>
-                    getKeyDownHandler(
-                      index,
-                      "vector",
-                      item
-                    )(e)
-                  }
+                  onKeyDown={e => getKeyDownHandler(index, "vector", item)(e)}
                 >
                   {"type" in item ? (
                     <FileIcon type={(item as Tables<"files">).type} size={32} />
@@ -122,7 +111,6 @@ export const VectorPicker: FC<VectorPickerProps> = ({
 
                   <div className="ml-3 flex flex-col">
                     <div className="font-bold">{item.name}</div>
-
                   </div>
                 </div>
               ))}

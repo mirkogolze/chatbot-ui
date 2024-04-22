@@ -6,6 +6,6 @@ export interface ChatFile {
 }
 
 export interface ChatVector {
-  id:string 
+  id: string
   name: string
 }

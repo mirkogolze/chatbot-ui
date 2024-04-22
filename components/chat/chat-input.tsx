@@ -112,7 +112,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
         if (isToolPickerOpen) setFocusTool(!focusTool)
         if (isAssistantPickerOpen) setFocusAssistant(!focusAssistant)
         if (isAssistantPickerOpen) setFocusAssistant(!focusAssistant)
-        if( isVectorPickerOpen) setFocusVector(!focusVector)
+        if (isVectorPickerOpen) setFocusVector(!focusVector)
       }
     }
 

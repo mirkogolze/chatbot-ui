@@ -27,8 +27,11 @@ export const ChatCommandInput: FC<ChatCommandInputProps> = ({}) => {
     focusVector
   } = useContext(ChatbotUIContext)
 
-  const { handleSelectUserFile, handleSelectUserCollection, hadleSelectVectors } =
-    usePromptAndCommand()
+  const {
+    handleSelectUserFile,
+    handleSelectUserCollection,
+    hadleSelectVectors
+  } = usePromptAndCommand()
   return (
     <>
       <PromptPicker />
@@ -49,14 +52,15 @@ export const ChatCommandInput: FC<ChatCommandInputProps> = ({}) => {
 
       <AssistantPicker />
 
-      <VectorPicker isOpen={isVectorPickerOpen} 
-      searchQuery={dollorCommand}
-      onOpenChange={setIsVectorPickerOpen}
-      selectedVectorIds={[...newMessageVectors, ...chatVectors].map(
-        vector => vector.id
-      )}
-      onSelectVector={hadleSelectVectors}
-      isFocused={focusVector}
+      <VectorPicker
+        isOpen={isVectorPickerOpen}
+        searchQuery={dollorCommand}
+        onOpenChange={setIsVectorPickerOpen}
+        selectedVectorIds={[...newMessageVectors, ...chatVectors].map(
+          vector => vector.id
+        )}
+        onSelectVector={hadleSelectVectors}
+        isFocused={focusVector}
       />
     </>
   )
