@@ -18,6 +18,7 @@ import {
   ChatFile,
   ChatMessage,
   ChatSettings,
+  ChatVector,
   LLM,
   MessageImage,
   OpenRouterLLM,
@@ -120,6 +121,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [newMessageImages, setNewMessageImages] = useState<MessageImage[]>([])
   const [showFilesDisplay, setShowFilesDisplay] = useState<boolean>(false)
 
+  const [newMessageVectors, setNewMessageVectors] = useState<ChatVector[]>([])
+  const [chatVectors, setChatVectors] = useState<ChatVector[]>([])
   // RETIEVAL STORE
   const [useRetrieval, setUseRetrieval] = useState<boolean>(true)
   const [sourceCount, setSourceCount] = useState<number>(4)
@@ -324,6 +327,10 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setNewMessageImages,
         showFilesDisplay,
         setShowFilesDisplay,
+        newMessageVectors,
+        setNewMessageVectors,
+        chatVectors,
+        setChatVectors,
 
         // RETRIEVAL STORE
         useRetrieval,

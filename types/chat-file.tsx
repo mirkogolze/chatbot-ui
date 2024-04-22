@@ -4,3 +4,8 @@ export interface ChatFile {
   type: string
   file: File | null
 }
+
+export interface ChatVector {
+  id:string 
+  name: string
+}

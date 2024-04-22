@@ -6,7 +6,8 @@ import {
   LLM,
   MessageImage,
   OpenRouterLLM,
-  WorkspaceImage
+  WorkspaceImage,
+  ChatVector
 } from "@/types"
 import { AssistantImage } from "@/types/images/assistant-image"
 import { VALID_ENV_KEYS } from "@/types/valid-keys"
@@ -132,6 +133,11 @@ interface ChatbotUIContext {
   setNewMessageImages: Dispatch<SetStateAction<MessageImage[]>>
   showFilesDisplay: boolean
   setShowFilesDisplay: Dispatch<SetStateAction<boolean>>
+
+  chatVectors: ChatVector[]
+  setChatVectors:Dispatch<SetStateAction<ChatVector[]>>
+  newMessageVectors: ChatVector[]
+  setNewMessageVectors: Dispatch<SetStateAction<ChatVector[]>>
 
   // RETRIEVAL STORE
   useRetrieval: boolean
@@ -266,6 +272,11 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setNewMessageImages: () => {},
   showFilesDisplay: false,
   setShowFilesDisplay: () => {},
+
+  chatVectors: [],
+  setChatVectors: ()=>{},
+  newMessageVectors: [],
+  setNewMessageVectors: ()=>{},
 
   // RETRIEVAL STORE
   useRetrieval: false,

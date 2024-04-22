@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tables } from "@/supabase/types"
 import { CollectionFile } from "@/types"
-import { IconBooks } from "@tabler/icons-react"
+import { Icon3dCubeSphere } from "@tabler/icons-react"
 import { FC, useState } from "react"
 import { SidebarItem } from "../all/sidebar-display-item"
 
@@ -38,7 +38,7 @@ export const QdrantItem: FC<QdrantItemProps> = ({ vectors }) => {
       item={vectors}
       isTyping={isTyping}
       contentType="vectors"
-      icon={<IconBooks size={30} />}
+      icon={<Icon3dCubeSphere size={30} />}
       updateState={{
         name
       }}

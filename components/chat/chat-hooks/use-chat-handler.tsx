@@ -53,6 +53,11 @@ export const useChatHandler = () => {
     setNewMessageFiles,
     setShowFilesDisplay,
     newMessageFiles,
+    newMessageVectors,
+    chatVectors,
+    setNewMessageVectors,
+    setIsVectorPickerOpen,
+    setChatVectors,
     chatFileItems,
     setChatFileItems,
     setToolInUse,
@@ -84,17 +89,22 @@ export const useChatHandler = () => {
     setChatMessages([])
     setSelectedChat(null)
     setChatFileItems([])
+    setChatVectors([])
+
 
     setIsGenerating(false)
     setFirstTokenReceived(false)
 
     setChatFiles([])
     setChatImages([])
+    setChatVectors([])
     setNewMessageFiles([])
     setNewMessageImages([])
+    setNewMessageVectors([])
     setShowFilesDisplay(false)
     setIsPromptPickerOpen(false)
     setIsFilePickerOpen(false)
+    setIsVectorPickerOpen(false)
 
     setSelectedTools([])
     setToolInUse("none")
@@ -238,7 +248,7 @@ export const useChatHandler = () => {
       let retrievedFileItems: Tables<"file_items">[] = []
 
       if (
-        (newMessageFiles.length > 0 || chatFiles.length > 0) &&
+        (newMessageFiles.length > 0 || chatFiles.length > 0 || newMessageVectors.length > 0 || chatVectors.length > 0) &&
         useRetrieval
       ) {
         setToolInUse("retrieval")
@@ -247,6 +257,8 @@ export const useChatHandler = () => {
           userInput,
           newMessageFiles,
           chatFiles,
+          newMessageVectors,
+          chatVectors,
           chatSettings!.embeddingsProvider,
           sourceCount
         )
