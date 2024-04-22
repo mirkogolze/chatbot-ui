@@ -13,7 +13,8 @@ import {
   IconJson,
   IconLoader2,
   IconMarkdown,
-  IconX
+  IconX,
+  Icon3dCubeSphere
 } from "@tabler/icons-react"
 import Image from "next/image"
 import { FC, useContext, useState } from "react"
@@ -40,7 +41,12 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
     chatImages,
     setChatImages,
     setChatFiles,
-    setUseRetrieval
+    setUseRetrieval,
+    vectors,
+    newMessageVectors,
+    setNewMessageVectors,
+    chatVectors,
+    setChatVectors
   } = useContext(ChatbotUIContext)
 
   const [selectedFile, setSelectedFile] = useState<ChatFile | null>(null)
@@ -60,8 +66,18 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
     ),
     ...chatFiles
   ]
+  const combinedChatVectors = [
+    ...newMessageVectors.filter(
+      vector => !chatVectors.some(chatVector => chatVector.id === vector.id)
+    ),
+    ...chatVectors
+  ]
 
-  const combinedMessageFiles = [...messageImages, ...combinedChatFiles]
+  const combinedMessageFiles = [
+    ...messageImages,
+    ...combinedChatFiles,
+    ...combinedChatVectors
+  ]
 
   const getLinkAndView = async (file: ChatFile) => {
     const fileRecord = files.find(f => f.id === file.id)
@@ -215,6 +231,48 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
                         newMessageFiles.filter(f => f.id !== file.id)
                       )
                       setChatFiles(chatFiles.filter(f => f.id !== file.id))
+                    }}
+                  />
+                </div>
+              )
+            )}
+            {combinedChatVectors.map((vector, index) =>
+              vector.id === "loading" ? (
+                <div
+                  key={index}
+                  className="relative flex h-[64px] items-center space-x-4 rounded-xl border-2 px-4 py-3"
+                >
+                  <div className="rounded bg-blue-500 p-2">
+                    <IconLoader2 className="animate-spin" />
+                  </div>
+
+                  <div className="truncate text-sm">
+                    <div className="truncate">{vector.name}</div>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  key={vector.id}
+                  className="relative flex h-[64px] cursor-pointer items-center space-x-4 rounded-xl border-2 px-4 py-3 hover:opacity-50"
+                >
+                  <div className="rounded bg-blue-500 p-2">
+                    <Icon3dCubeSphere />
+                  </div>
+
+                  <div className="truncate text-sm">
+                    <div className="truncate">{vector.name}</div>
+                  </div>
+
+                  <IconX
+                    className="bg-muted-foreground border-primary absolute right-[-6px] top-[-6px] flex size-5 cursor-pointer items-center justify-center rounded-full border-DEFAULT text-[10px] hover:border-red-500 hover:bg-white hover:text-red-500"
+                    onClick={e => {
+                      e.stopPropagation()
+                      setNewMessageVectors(
+                        newMessageVectors.filter(f => f.id !== vector.id)
+                      )
+                      setChatVectors(
+                        chatVectors.filter(f => f.id !== vector.id)
+                      )
                     }}
                   />
                 </div>

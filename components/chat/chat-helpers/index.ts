@@ -16,6 +16,7 @@ import {
   ChatMessage,
   ChatPayload,
   ChatSettings,
+  ChatVector,
   LLM,
   LLMID,
   MessageImage
@@ -57,6 +58,8 @@ export const handleRetrieval = async (
   userInput: string,
   newMessageFiles: ChatFile[],
   chatFiles: ChatFile[],
+  newMessageVectors: ChatVector[],
+  chatVectors: ChatVector[],
   embeddingsProvider:
     | "openai"
     | "local"
@@ -69,6 +72,9 @@ export const handleRetrieval = async (
     body: JSON.stringify({
       userInput,
       fileIds: [...newMessageFiles, ...chatFiles].map(file => file.id),
+      vectorNames: [...newMessageVectors, ...chatVectors].map(
+        vector => vector.name
+      ),
       embeddingsProvider,
       sourceCount
     })

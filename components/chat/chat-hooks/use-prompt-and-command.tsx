@@ -11,6 +11,8 @@ export const usePromptAndCommand = () => {
   const {
     chatFiles,
     setNewMessageFiles,
+    chatVectors,
+    setNewMessageVectors,
     userInput,
     setUserInput,
     setShowFilesDisplay,
@@ -78,10 +80,26 @@ export const usePromptAndCommand = () => {
     setIsPromptPickerOpen(false)
     setUserInput(userInput.replace(/\/[^ ]*$/, "") + prompt.content)
   }
-  const hadleSelectVectors = (vector: Tables<"vectors">) => {
+  const hadleSelectVectors = async (vector: Tables<"vectors">) => {
     setIsVectorPickerOpen(false)
     setUseRetrieval(true)
     setUserInput(userInput.replace(/\$[^ ]*$/, ""))
+    setNewMessageVectors(prev => {
+      const VectorsAlreadySelected =
+        prev.some(prevFile => prevFile.id === vector.id) ||
+        chatVectors.some(chatVector => chatVector.id === vector.id)
+
+      if (!VectorsAlreadySelected) {
+        return [
+          ...prev,
+          {
+            id: vector.id,
+            name: vector.name
+          }
+        ]
+      }
+      return prev
+    })
   }
 
   const handleSelectUserFile = async (file: Tables<"files">) => {
@@ -203,6 +221,7 @@ export const usePromptAndCommand = () => {
     handleSelectUserFile,
     handleSelectUserCollection,
     handleSelectTool,
-    handleSelectAssistant
+    handleSelectAssistant,
+    hadleSelectVectors
   }
 }

@@ -24,7 +24,7 @@ export class qDrant {
 
   constructor() {
     this.qclient = new QdrantClient({
-      url: process.env.NEXT_PUBLIC_QDRANT_URL!
+      url: process.env.QDRANT_URL!
     })
   }
   public async addEmbeddings(
@@ -54,23 +54,38 @@ export class qDrant {
   }
   public async searchEmbeddings(
     uniqueFileIds: string[],
+    uniqueVectorNames: string[],
     user_id: string,
     localEmbedding: number[]
   ): Promise<SearchResult[]> {
-    const should = uniqueFileIds.map((x, index) => ({
-      key: "file_id",
-      match: { value: x }
-    }))
-    const result = await this.qclient.search(user_id, {
-      vector: localEmbedding,
-      filter: {
-        should: should
-      },
-      with_payload: true
-    })
+    let result: any[] = []
+    if (uniqueFileIds.length != 0) {
+      const should = uniqueFileIds.map((x, index) => ({
+        key: "file_id",
+        match: { value: x }
+      }))
+      result = await this.qclient.search(user_id, {
+        vector: localEmbedding,
+        filter: {
+          should: should
+        },
+        with_payload: true
+      })
+    } else {
+    }
+
+    for (const collection_name of uniqueVectorNames) {
+      result = [
+        ...result,
+        ...(await this.qclient.search(collection_name, {
+          vector: localEmbedding,
+          with_payload: true
+        }))
+      ]
+    }
     const ret = result.map((tmpDct, index) => ({
       id: tmpDct.id,
-      file_id: tmpDct?.payload?.file_id,
+      file_id: "",
       content: tmpDct?.payload?.content,
       tokens: tmpDct?.payload?.tokens,
       similarity: tmpDct.score

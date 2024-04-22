@@ -7,7 +7,8 @@ import {
   IconMessage,
   IconPencil,
   IconRobotFace,
-  IconSparkles
+  IconSparkles,
+  Icon3dCubeSphere
 } from "@tabler/icons-react"
 import { FC } from "react"
 import { TabsList } from "../ui/tabs"
@@ -75,7 +76,7 @@ export const SidebarSwitcher: FC<SidebarSwitcherProps> = ({
           onContentTypeChange={onContentTypeChange}
         />
         <SidebarSwitchItem
-          icon={<IconBooks size={SIDEBAR_ICON_SIZE} />}
+          icon={<Icon3dCubeSphere size={SIDEBAR_ICON_SIZE} />}
           contentType="vectors"
           onContentTypeChange={onContentTypeChange}
         />

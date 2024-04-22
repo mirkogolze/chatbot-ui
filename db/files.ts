@@ -303,16 +303,23 @@ export const updateFile = async (
 }
 
 export const deleteFile = async (fileId: string) => {
-  const { error } = await supabase.from("files").delete().eq("id", fileId)
+  let { error } = await supabase.from("files").delete().eq("id", fileId)
 
   if (error) {
     throw new Error(error.message)
   }
 
-  qclient.deleteFile(
-    (await supabase.auth.getUser()).data.user?.id || "",
-    fileId
-  )
+  await fetch("/api/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      userId: (await supabase.auth.getUser()).data.user?.id || "",
+      fileId: fileId
+    })
+  })
+
   return true
 }
 

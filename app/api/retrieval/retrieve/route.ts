@@ -8,19 +8,21 @@ import { qDrant } from "@/lib/qdrant"
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const { userInput, fileIds, embeddingsProvider, sourceCount } = json as {
-    userInput: string
-    fileIds: string[]
-    embeddingsProvider:
-      | "openai"
-      | "local"
-      | "multilingual-e5-large"
-      | "multilingual-e5-small"
-    sourceCount: number
-  }
+  const { userInput, fileIds, vectorNames, embeddingsProvider, sourceCount } =
+    json as {
+      userInput: string
+      fileIds: string[]
+      vectorNames: string[]
+      embeddingsProvider:
+        | "openai"
+        | "local"
+        | "multilingual-e5-large"
+        | "multilingual-e5-small"
+      sourceCount: number
+    }
 
   const uniqueFileIds = [...new Set(fileIds)]
-
+  const uniqueVectorNames = [...new Set(vectorNames)]
   try {
     const qclient = new qDrant()
     const supabaseAdmin = createClient<Database>(
@@ -82,6 +84,7 @@ export async function POST(request: Request) {
         const qclient = new qDrant()
         chunks = await qclient.searchEmbeddings(
           uniqueFileIds,
+          uniqueVectorNames,
           profile.user_id,
           localEmbedding
         )
@@ -116,6 +119,7 @@ export async function POST(request: Request) {
         const qclient = new qDrant()
         chunks = await qclient.searchEmbeddings(
           uniqueFileIds,
+          uniqueVectorNames,
           profile.user_id,
           openaiEmbedding
         )
