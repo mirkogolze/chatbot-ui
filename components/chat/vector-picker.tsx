@@ -1,6 +1,6 @@
 import { ChatbotUIContext } from "@/context/context"
 import { Tables } from "@/supabase/types"
-import { IconBooks } from "@tabler/icons-react"
+import { Icon3dCubeSphere } from "@tabler/icons-react"
 import { FC, useContext, useEffect, useRef } from "react"
 import { FileIcon } from "../ui/file-icon"
 
@@ -106,7 +106,7 @@ export const VectorPicker: FC<VectorPickerProps> = ({
                   {"type" in item ? (
                     <FileIcon type={(item as Tables<"files">).type} size={32} />
                   ) : (
-                    <IconBooks size={32} />
+                    <Icon3dCubeSphere size={32} />
                   )}
 
                   <div className="ml-3 flex flex-col">
