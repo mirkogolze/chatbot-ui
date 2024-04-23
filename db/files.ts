@@ -303,7 +303,11 @@ export const updateFile = async (
 }
 
 export const deleteFile = async (fileId: string) => {
-  let {data:embeddings_provider, error:er} = await supabase.from("files").select("embeddings_provider").eq("id", fileId).single()
+  let { data: embeddings_provider, error: er } = await supabase
+    .from("files")
+    .select("embeddings_provider")
+    .eq("id", fileId)
+    .single()
   let { error } = await supabase.from("files").delete().eq("id", fileId)
 
   if (error) {
