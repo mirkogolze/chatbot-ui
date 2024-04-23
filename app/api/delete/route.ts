@@ -2,13 +2,14 @@ import { qDrant } from "@/lib/qdrant"
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const { userId, fileId } = json as {
+  const { userId, fileId,embeddingsProvider } = json as {
     userId: string
     fileId: string
+    embeddingsProvider : string
   }
   try {
     const qclient = new qDrant()
-    qclient.deleteFile(userId, fileId)
+    qclient.deleteFile(userId, fileId,embeddingsProvider)
     return new Response(JSON.stringify({}), {
       status: 200
     })

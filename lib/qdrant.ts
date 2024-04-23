@@ -96,8 +96,8 @@ export class qDrant {
     }))
     return ret
   }
-  public async deleteFile(user_id: string, fileId: string) {
-    this.qclient.delete(user_id, {
+  public async deleteFile(user_id: string, fileId: string,embeddingsProvider:string) {
+    this.qclient.delete(user_id+embeddingsProvider, {
       filter: {
         must: [
           {

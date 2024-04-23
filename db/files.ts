@@ -303,6 +303,7 @@ export const updateFile = async (
 }
 
 export const deleteFile = async (fileId: string) => {
+  let {data:embeddings_provider, error:er} = await supabase.from("files").select("embeddings_provider").eq("id", fileId).single()
   let { error } = await supabase.from("files").delete().eq("id", fileId)
 
   if (error) {
@@ -316,7 +317,8 @@ export const deleteFile = async (fileId: string) => {
     },
     body: JSON.stringify({
       userId: (await supabase.auth.getUser()).data.user?.id || "",
-      fileId: fileId
+      fileId: fileId,
+      embeddingsProvider: embeddings_provider?.embeddings_provider || ""
     })
   })
 
