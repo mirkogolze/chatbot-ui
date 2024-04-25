@@ -74,7 +74,8 @@ export class qDrant {
         filter: {
           should: should
         },
-        with_payload: true
+        with_payload: true,
+        limit:100
       })
     }
 
@@ -83,7 +84,8 @@ export class qDrant {
         ...result,
         ...(await this.qclient.search(collection_name, {
           vector: localEmbedding,
-          with_payload: true
+          with_payload: true,
+          limit:100
         }))
       ]
     }
