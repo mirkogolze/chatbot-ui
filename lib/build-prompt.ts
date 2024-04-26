@@ -1,58 +1,73 @@
 import { Tables } from "@/supabase/types"
 import { ChatPayload, MessageImage } from "@/types"
 import { encode } from "gpt-tokenizer"
-import { franc } from "franc"
+import { franc } from "franc-min"
+
+interface langDefintion {
+  BEGIN_SOURCE: string
+  END_SOURCE: string
+  SOURCE_INSTRUCT: string
+  SOURCE_LINK: string
+  SOURCE_TOKEN: number
+  ROLE: string
+  ROLE_TEXT: string
+  TODAY: string
+  USER_INFO: string
+  SYSTEM_INSTRUCT: string
+  USER_INSTRUCT: string
+}
 
 const languageCache = new Map<string, string>()
+
+const sourcesMAP = new Map<string, langDefintion>()
+sourcesMAP.set('deu', { ROLE: 'INJIZIERE ROLLE', BEGIN_SOURCE: 'BEGIN DOKUMENT', END_SOURCE: 'ENDE DOKUMENT', 
+  SOURCE_TOKEN: 12, SOURCE_LINK: "QUELLE",
+  SOURCE_INSTRUCT: 'Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast.',
+  TODAY: 'Heute ist der', ROLE_TEXT: 'Du bist keine KI. Du bist', USER_INFO: 'Nutzer Information', 
+  SYSTEM_INSTRUCT: 'System Anweisungen', USER_INSTRUCT: 'Nutzer Anweisungen' })
+sourcesMAP.set('eng', { ROLE: 'INJECT ROLE', BEGIN_SOURCE: 'BEGIN SOURCE', END_SOURCE: 'END SOURCE',  
+  SOURCE_TOKEN: 10, SOURCE_LINK: "SOURCE_HREF",
+  SOURCE_INSTRUCT: `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know.`,
+  TODAY: 'Today is', ROLE_TEXT: 'You are not an AI. You are', USER_INFO: 'User Info', 
+  SYSTEM_INSTRUCT: 'System Instructions', USER_INSTRUCT: 'Nutzer Anweisungen' })
 
 const buildBasePrompt = (
   prompt: string,
   profileContext: string,
   workspaceInstructions: string,
   assistant: Tables<"assistants"> | null
-) => {
-  let language = "eng"
+): [string, string] => {
+  let language = 'eng'
   const cachedLang = languageCache.get(prompt)
   language = cachedLang ? cachedLang : franc(prompt)
   languageCache.set(prompt, language)
 
-  let fullPrompt = ""
-
-  if (language == "deu") {
-    if (assistant) {
-      fullPrompt += `<INJIZIERE ROLLE>\nDu bist keine KI. Du bist ${assistant.name}.\n</INJIZIERE ROLLE>\n\n`
-    }
-
-    fullPrompt += `Heute ist ${new Date().toLocaleDateString()}.\n\n`
-
-    if (profileContext) {
-      fullPrompt += `Nutzer Information:\n${profileContext}\n\n`
-    }
-
-    if (workspaceInstructions) {
-      fullPrompt += `System Anweisungen:\n${workspaceInstructions}\n\n`
-    }
-
-    fullPrompt += `Nutzer Anweisungen:\n${prompt}`
-  } else {
-    if (assistant) {
-      fullPrompt += `<INJECT ROLE>\nYou are not an AI. You are ${assistant.name}.\n</INJECT ROLE>\n\n`
-    }
-
-    fullPrompt += `Today is ${new Date().toLocaleDateString()}.\n\n`
-
-    if (profileContext) {
-      fullPrompt += `User Info:\n${profileContext}\n\n`
-    }
-
-    if (workspaceInstructions) {
-      fullPrompt += `System Instructions:\n${workspaceInstructions}\n\n`
-    }
-
-    fullPrompt += `User Instructions:\n${prompt}`
+  if (language != 'deu') {
+    language = 'eng'
   }
 
-  return fullPrompt
+  let fullPrompt = ""
+
+  const mapping = sourcesMAP.get(language);
+  if (language == "deu") {
+    if (assistant) {
+      fullPrompt += `<${mapping?.ROLE}>\n${mapping?.ROLE_TEXT} ${assistant.name}.\n</${mapping?.ROLE}>\n\n`
+    }
+
+    fullPrompt += `${mapping?.TODAY} ${new Date().toLocaleDateString()}.\n\n`
+
+    if (profileContext) {
+      fullPrompt += `${mapping?.USER_INFO}:\n${profileContext}\n\n`
+    }
+
+    if (workspaceInstructions) {
+      fullPrompt += `${mapping?.SYSTEM_INSTRUCT}:\n${workspaceInstructions}\n\n`
+    }
+
+    fullPrompt += `${mapping?.USER_INSTRUCT}:\n${prompt}`
+  } 
+
+  return [ fullPrompt, language]
 }
 
 export async function buildFinalMessages(
@@ -69,7 +84,7 @@ export async function buildFinalMessages(
     chatFileItems
   } = payload
 
-  const BUILT_PROMPT = buildBasePrompt(
+  const [BUILT_PROMPT, language] = buildBasePrompt(
     chatSettings.prompt,
     chatSettings.includeProfileContext ? profile.profile_context || "" : "",
     chatSettings.includeWorkspaceInstructions ? workspaceInstructions : "",
@@ -98,7 +113,8 @@ export async function buildFinalMessages(
 
       const [retrievalText, totalTokens] = buildRetrievalText(
         findFileItems,
-        remainingTokens
+        remainingTokens,
+        language
       )
       return {
         message: {
@@ -133,7 +149,8 @@ export async function buildFinalMessages(
   if (messageFileItems.length > 0) {
     const [retrievalText, totalTokens] = buildRetrievalText(
       messageFileItems,
-      remainingTokens
+      remainingTokens,
+      language
     )
     remainingTokens = remainingTokens - totalTokens
     additionalText = retrievalText
@@ -204,20 +221,32 @@ export async function buildFinalMessages(
 
 function buildRetrievalText(
   fileItems: Tables<"file_items">[],
-  remainingTokens: number
+  remainingTokens: number,
+  language: string
 ): [string, number] {
   const retrievalText: string[] = []
   let totalTokens: number = 0
+  const mapping = sourcesMAP.get(language);
   for (let item of fileItems) {
-    if (remainingTokens < totalTokens + item.tokens + 10) {
+    const extraTokens = mapping?.SOURCE_TOKEN || 10
+    const beginSource = mapping?.BEGIN_SOURCE || 'BEGIN SOURCE'
+    const endSource = mapping?.BEGIN_SOURCE || 'END SOURCE'
+    const soureceLink = mapping?.SOURCE_LINK || 'SOURCE_LINK'
+    if (remainingTokens < totalTokens + item.tokens + extraTokens) {
       break
     }
-    totalTokens += item.tokens + 10
-    retrievalText.push(`<BEGIN SOURCE>\n${item.content}\n</END SOURCE>`)
+    totalTokens += item.tokens + extraTokens
+    let source = ""
+    if (item.source) {
+      source = `\n<${soureceLink}>${item.source}</${soureceLink}`
+      totalTokens += 10
+    }
+
+    retrievalText.push(`<${beginSource}>\n${item.content}\n${source}</${endSource}>`)
   }
 
   return [
-    `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know."\n\n${retrievalText.join("\n\n")}`,
+    `${mapping?.SOURCE_INSTRUCT}\n\n${retrievalText.join("\n\n")}`,
     totalTokens
   ]
 }
@@ -230,7 +259,7 @@ export async function buildGoogleGeminiFinalMessages(
   const { chatSettings, workspaceInstructions, chatMessages, assistant } =
     payload
 
-  const BUILT_PROMPT = buildBasePrompt(
+  const [BUILT_PROMPT, language] = buildBasePrompt(
     chatSettings.prompt,
     chatSettings.includeProfileContext ? profile.profile_context || "" : "",
     chatSettings.includeWorkspaceInstructions ? workspaceInstructions : "",

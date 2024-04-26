@@ -661,7 +661,8 @@ export type Database = {
           sharing: string
           tokens: number
           updated_at: string | null
-          user_id: string
+          user_id: string,
+          source: string | null
         }
         Insert: {
           content: string

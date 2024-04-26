@@ -9,6 +9,8 @@ export interface FileItem {
     file_id: string
     tokens: any // or replace 'any' with the appropriate type
     content: any // or replace 'any' with the appropriate type
+    source: any
+    type: any
   }
 }
 export interface SearchResult {
@@ -16,6 +18,8 @@ export interface SearchResult {
   file_id: any
   content: any
   tokens: any // I assumed it could be an array of any type
+  source: any
+  type: any
   similarity: number
 }
 
@@ -47,7 +51,9 @@ export class qDrant {
       payload: {
         file_id: file_id,
         tokens: chunk.tokens,
-        content: chunk.content
+        content: chunk.content,
+        type: chunk.type,
+        source: chunk.source
       }
     }))
     this.qclient.upsert(user_id + embeddingsProvider, {
