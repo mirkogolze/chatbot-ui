@@ -20,16 +20,33 @@ interface langDefintion {
 const languageCache = new Map<string, string>()
 
 const sourcesMAP = new Map<string, langDefintion>()
-sourcesMAP.set('deu', { ROLE: 'INJIZIERE ROLLE', BEGIN_SOURCE: 'BEGIN DOKUMENT', END_SOURCE: 'ENDE DOKUMENT', 
-  SOURCE_TOKEN: 12, SOURCE_LINK: "QUELLE",
-  SOURCE_INSTRUCT: 'Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast.',
-  TODAY: 'Heute ist der', ROLE_TEXT: 'Du bist keine KI. Du bist', USER_INFO: 'Nutzer Information', 
-  SYSTEM_INSTRUCT: 'System Anweisungen', USER_INSTRUCT: 'Nutzer Anweisungen' })
-sourcesMAP.set('eng', { ROLE: 'INJECT ROLE', BEGIN_SOURCE: 'BEGIN SOURCE', END_SOURCE: 'END SOURCE',  
-  SOURCE_TOKEN: 10, SOURCE_LINK: "SOURCE_HREF",
+sourcesMAP.set("deu", {
+  ROLE: "INJIZIERE ROLLE",
+  BEGIN_SOURCE: "BEGIN DOKUMENT",
+  END_SOURCE: "ENDE DOKUMENT",
+  SOURCE_TOKEN: 12,
+  SOURCE_LINK: "QUELLE",
+  SOURCE_INSTRUCT:
+    'Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast.',
+  TODAY: "Heute ist der",
+  ROLE_TEXT: "Du bist keine KI. Du bist",
+  USER_INFO: "Nutzer Information",
+  SYSTEM_INSTRUCT: "System Anweisungen",
+  USER_INSTRUCT: "Nutzer Anweisungen"
+})
+sourcesMAP.set("eng", {
+  ROLE: "INJECT ROLE",
+  BEGIN_SOURCE: "BEGIN SOURCE",
+  END_SOURCE: "END SOURCE",
+  SOURCE_TOKEN: 10,
+  SOURCE_LINK: "SOURCE_HREF",
   SOURCE_INSTRUCT: `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know.`,
-  TODAY: 'Today is', ROLE_TEXT: 'You are not an AI. You are', USER_INFO: 'User Info', 
-  SYSTEM_INSTRUCT: 'System Instructions', USER_INSTRUCT: 'Nutzer Anweisungen' })
+  TODAY: "Today is",
+  ROLE_TEXT: "You are not an AI. You are",
+  USER_INFO: "User Info",
+  SYSTEM_INSTRUCT: "System Instructions",
+  USER_INSTRUCT: "Nutzer Anweisungen"
+})
 
 const buildBasePrompt = (
   prompt: string,
@@ -37,18 +54,18 @@ const buildBasePrompt = (
   workspaceInstructions: string,
   assistant: Tables<"assistants"> | null
 ): [string, string] => {
-  let language = 'eng'
+  let language = "eng"
   const cachedLang = languageCache.get(prompt)
   language = cachedLang ? cachedLang : franc(prompt)
   languageCache.set(prompt, language)
 
-  if (language != 'deu') {
-    language = 'eng'
+  if (language != "deu") {
+    language = "eng"
   }
 
   let fullPrompt = ""
 
-  const mapping = sourcesMAP.get(language);
+  const mapping = sourcesMAP.get(language)
   if (language == "deu") {
     if (assistant) {
       fullPrompt += `<${mapping?.ROLE}>\n${mapping?.ROLE_TEXT} ${assistant.name}.\n</${mapping?.ROLE}>\n\n`
@@ -65,9 +82,9 @@ const buildBasePrompt = (
     }
 
     fullPrompt += `${mapping?.USER_INSTRUCT}:\n${prompt}`
-  } 
+  }
 
-  return [ fullPrompt, language]
+  return [fullPrompt, language]
 }
 
 export async function buildFinalMessages(
@@ -226,12 +243,12 @@ function buildRetrievalText(
 ): [string, number] {
   const retrievalText: string[] = []
   let totalTokens: number = 0
-  const mapping = sourcesMAP.get(language);
+  const mapping = sourcesMAP.get(language)
   for (let item of fileItems) {
     const extraTokens = mapping?.SOURCE_TOKEN || 10
-    const beginSource = mapping?.BEGIN_SOURCE || 'BEGIN SOURCE'
-    const endSource = mapping?.BEGIN_SOURCE || 'END SOURCE'
-    const soureceLink = mapping?.SOURCE_LINK || 'SOURCE_LINK'
+    const beginSource = mapping?.BEGIN_SOURCE || "BEGIN SOURCE"
+    const endSource = mapping?.BEGIN_SOURCE || "END SOURCE"
+    const soureceLink = mapping?.SOURCE_LINK || "SOURCE_LINK"
     if (remainingTokens < totalTokens + item.tokens + extraTokens) {
       break
     }
@@ -242,7 +259,9 @@ function buildRetrievalText(
       totalTokens += 10
     }
 
-    retrievalText.push(`<${beginSource}>\n${item.content}\n${source}</${endSource}>`)
+    retrievalText.push(
+      `<${beginSource}>\n${item.content}\n${source}</${endSource}>`
+    )
   }
 
   return [
