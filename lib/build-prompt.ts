@@ -66,23 +66,21 @@ const buildBasePrompt = (
   let fullPrompt = ""
 
   const mapping = sourcesMAP.get(language)
-  if (language == "deu") {
-    if (assistant) {
-      fullPrompt += `<${mapping?.ROLE}>\n${mapping?.ROLE_TEXT} ${assistant.name}.\n</${mapping?.ROLE}>\n\n`
-    }
-
-    fullPrompt += `${mapping?.TODAY} ${new Date().toLocaleDateString()}.\n\n`
-
-    if (profileContext) {
-      fullPrompt += `${mapping?.USER_INFO}:\n${profileContext}\n\n`
-    }
-
-    if (workspaceInstructions) {
-      fullPrompt += `${mapping?.SYSTEM_INSTRUCT}:\n${workspaceInstructions}\n\n`
-    }
-
-    fullPrompt += `${mapping?.USER_INSTRUCT}:\n${prompt}`
+  if (assistant) {
+    fullPrompt += `<${mapping?.ROLE}>\n${mapping?.ROLE_TEXT} ${assistant.name}.\n</${mapping?.ROLE}>\n\n`
   }
+
+  fullPrompt += `${mapping?.TODAY} ${new Date().toLocaleDateString()}.\n\n`
+
+  if (profileContext) {
+    fullPrompt += `${mapping?.USER_INFO}:\n${profileContext}\n\n`
+  }
+
+  if (workspaceInstructions) {
+    fullPrompt += `${mapping?.SYSTEM_INSTRUCT}:\n${workspaceInstructions}\n\n`
+  }
+
+  fullPrompt += `${mapping?.USER_INSTRUCT}:\n${prompt}`
 
   return [fullPrompt, language]
 }

@@ -100,6 +100,8 @@ export class qDrant {
       file_id: "",
       content: tmpDct?.payload?.content,
       tokens: tmpDct?.payload?.tokens,
+      source: tmpDct?.payload?.source,
+      type: tmpDct?.payload?.type,
       similarity: tmpDct.score
     }))
     return ret
