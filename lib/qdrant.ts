@@ -106,6 +106,7 @@ export class qDrant {
     }))
     return ret
   }
+  
   public async deleteFile(
     user_id: string,
     fileId: string,

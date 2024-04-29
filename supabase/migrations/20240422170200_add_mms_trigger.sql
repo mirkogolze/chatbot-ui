@@ -22,12 +22,12 @@ BEGIN
     WHERE id = NEW.id;
 
     INSERT INTO models(user_id, api_key, base_url, model_id, name, description, context_length)
-    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de:8444/v1', 'codellama-34b', 'Codellama-34b', 'EMTPY', 8192);
+    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'codellama-34b', 'Codellama-34b', 'EMTPY', 8192);
     INSERT INTO model_workspaces(model_id, workspace_id, user_id)
     VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'codellama-34b'), NEW.id, NEW.user_id);
 
     INSERT INTO models(user_id, api_key, base_url, model_id, name, description, context_length)
-    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de:8444/v1', 'mixtral-8x7B', 'Mixtral-8x7B', 'EMTPY', 16384);
+    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'mixtral-8x7B', 'Mixtral-8x7B', 'EMTPY', 16384);
     INSERT INTO model_workspaces(model_id, workspace_id, user_id)
     VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'mixtral-8x7B'), NEW.id, NEW.user_id);
 
