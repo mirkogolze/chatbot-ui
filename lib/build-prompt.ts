@@ -27,7 +27,9 @@ sourcesMAP.set("deu", {
   SOURCE_TOKEN: 12,
   SOURCE_LINK: "QUELLE",
   SOURCE_INSTRUCT:
-    'Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast.',
+    `Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, 
+    sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast. 
+    Achte darauf jede Quelle nur einmal aufzuzählen!`,
   TODAY: "Heute ist der",
   ROLE_TEXT: "Du bist keine KI. Du bist",
   USER_INFO: "Nutzer Information",
