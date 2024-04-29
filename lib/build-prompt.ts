@@ -26,8 +26,7 @@ sourcesMAP.set("deu", {
   END_SOURCE: "ENDE DOKUMENT",
   SOURCE_TOKEN: 12,
   SOURCE_LINK: "QUELLE",
-  SOURCE_INSTRUCT:
-    `Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, 
+  SOURCE_INSTRUCT: `Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, 
     sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast. 
     Achte darauf jede Quelle nur einmal aufzuzählen!`,
   TODAY: "Heute ist der",
