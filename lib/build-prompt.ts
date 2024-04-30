@@ -27,8 +27,8 @@ sourcesMAP.set("deu", {
   SOURCE_TOKEN: 12,
   SOURCE_LINK: "QUELLE",
   SOURCE_INSTRUCT: `Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, 
-    sage "Ich weiß es nicht."\nJedes Dokument kann eine QUELLE enthalten. Gib einen Link auf die Quelle zurück, wenn du diese verwendet hast. 
-    Achte darauf jede Quelle nur einmal aufzuzählen!`,
+    sage: "Ich weiß es nicht."\nJedes Dokument kann eine <QUELLE> enthalten. Gib je einen Link auf die von dir verwendete Quelle zurück. 
+    Achte jedoch darauf, jede Quelle nur EINMAL aufzuzählen! Liste die Quellen als Markdown-Liste auf.`,
   TODAY: "Heute ist der",
   ROLE_TEXT: "Du bist keine KI. Du bist",
   USER_INFO: "Nutzer Information",
@@ -246,7 +246,7 @@ function buildRetrievalText(
   for (let item of fileItems) {
     const extraTokens = mapping?.SOURCE_TOKEN || 10
     const beginSource = mapping?.BEGIN_SOURCE || "BEGIN SOURCE"
-    const endSource = mapping?.BEGIN_SOURCE || "END SOURCE"
+    const endSource = mapping?.END_SOURCE || "END SOURCE"
     const soureceLink = mapping?.SOURCE_LINK || "SOURCE_LINK"
     if (remainingTokens < totalTokens + item.tokens + extraTokens) {
       break
@@ -254,8 +254,8 @@ function buildRetrievalText(
     totalTokens += item.tokens + extraTokens
     let source = ""
     if (item.source) {
-      source = `\n<${soureceLink}>${item.source}</${soureceLink}`
-      totalTokens += 10
+      source = `\n<${soureceLink}>${item.source}</${soureceLink}>`
+      totalTokens += encode(item.source).length + 10
     }
 
     retrievalText.push(
