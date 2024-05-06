@@ -10,6 +10,7 @@ import { Tables } from "@/supabase/types"
 import { ChatMessage, ChatPayload, LLMID, ModelProvider } from "@/types"
 import { useRouter } from "next/navigation"
 import { useContext, useEffect, useRef } from "react"
+import { toast } from "sonner"
 import { LLM_LIST } from "../../../lib/models/llm/llm-list"
 import {
   createTempMessages,
@@ -401,10 +402,13 @@ export const useChatHandler = () => {
       setIsGenerating(false)
       setFirstTokenReceived(false)
       setUserInput("")
-    } catch (error) {
+    } catch (error: any) {
       setIsGenerating(false)
       setFirstTokenReceived(false)
       setUserInput(startingInput)
+      toast.error(
+        `An error occured while chatting. ${ error?.message}`
+      )
     }
   }
 

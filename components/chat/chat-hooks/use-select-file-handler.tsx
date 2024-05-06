@@ -187,7 +187,7 @@ export const useSelectFileHandler = () => {
             )
           }
         } catch (error: any) {
-          toast.error("Failed to upload. " + error?.message, {
+          toast.error(`Failed to upload. ${error?.message}`, {
             duration: 10000
           })
           setNewMessageImages(prev =>

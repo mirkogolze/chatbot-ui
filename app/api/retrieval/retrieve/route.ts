@@ -24,7 +24,6 @@ export async function POST(request: Request) {
   const uniqueFileIds = [...new Set(fileIds)]
   const uniqueVectorNames = [...new Set(vectorNames)]
   try {
-    const qclient = new qDrant()
     const supabaseAdmin = createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -146,10 +145,11 @@ export async function POST(request: Request) {
       status: 200
     })
   } catch (error: any) {
-    const errorMessage = error.error?.message || "An unexpected error occurred"
-    const errorCode = error.status || 500
-    return new Response(JSON.stringify({ message: errorMessage }), {
-      status: errorCode
-    })
+    //const errorMessage = error.error?.message || "An unexpected error occurred"
+    //const errorCode = error.status || 500
+    //return new Response(JSON.stringify({ message: errorMessage }), {
+    //  status: errorCode
+    //})
+    throw error
   }
 }
