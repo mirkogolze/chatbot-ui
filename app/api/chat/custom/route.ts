@@ -55,15 +55,15 @@ export async function POST(request: Request) {
         "Custom API Key not found. Please set it in your profile settings."
       return new Response(JSON.stringify({ message: errorMessage }), {
         status: errorCode
-      })    
+      })
     } else if (errorMessage.toLowerCase().includes("incorrect api key")) {
       errorMessage =
         "Custom API Key is incorrect. Please fix it in your profile settings."
       return new Response(JSON.stringify({ message: errorMessage }), {
         status: errorCode
-      })    
+      })
     }
 
-    throw error;
+    throw error
   }
 }

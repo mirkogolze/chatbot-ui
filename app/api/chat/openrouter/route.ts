@@ -44,9 +44,9 @@ export async function POST(request: Request) {
         "OpenRouter API Key not found. Please set it in your profile settings."
       return new Response(JSON.stringify({ message: errorMessage }), {
         status: errorCode
-      })   
+      })
     }
 
-    throw error;
+    throw error
   }
 }

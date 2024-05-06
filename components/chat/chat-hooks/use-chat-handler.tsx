@@ -406,9 +406,7 @@ export const useChatHandler = () => {
       setIsGenerating(false)
       setFirstTokenReceived(false)
       setUserInput(startingInput)
-      toast.error(
-        `An error occured while chatting. ${ error?.message}`
-      )
+      toast.error(`An error occured while chatting. ${error?.message}`)
     }
   }
 
