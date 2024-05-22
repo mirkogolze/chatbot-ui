@@ -181,7 +181,6 @@ export async function buildFinalMessages(
     const messageTokens = encode(message.content).length
 
     if (messageTokens <= remainingTokens) {
-
       remainingTokens -= messageTokens
       finalMessages.unshift(message)
     } else {
