@@ -278,6 +278,7 @@ export const useChatHandler = () => {
           selectedAssistant
         )
 
+
       let payload: ChatPayload = {
         chatSettings: chatSettings!,
         workspaceInstructions: selectedWorkspace!.instructions || "",
@@ -288,7 +289,6 @@ export const useChatHandler = () => {
         messageFileItems: retrievedFileItems,
         chatFileItems: chatFileItems
       }
-
       let generatedText = ""
 
       if (selectedTools.length > 0) {
@@ -297,7 +297,8 @@ export const useChatHandler = () => {
         const formattedMessages = await buildFinalMessages(
           payload,
           profile!,
-          chatImages
+          chatImages,
+          isRegeneration
         )
 
         const response = await fetch("/api/chat/tools", {

@@ -168,7 +168,7 @@ export const handleLocalChat = async (
   setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
   setToolInUse: React.Dispatch<React.SetStateAction<string>>
 ) => {
-  const formattedMessages = await buildFinalMessages(payload, profile, [])
+  const formattedMessages = await buildFinalMessages(payload, profile, [], isRegeneration)
 
   // Ollama API: https://github.com/jmorganca/ollama/blob/main/docs/api.md
   const response = await fetchChatResponse(
@@ -227,7 +227,7 @@ export const handleHostedChat = async (
       newMessageImages
     )
   } else {
-    formattedMessages = await buildFinalMessages(payload, profile, chatImages)
+    formattedMessages = await buildFinalMessages(payload, profile, chatImages, isRegeneration)
   }
 
   const apiEndpoint =
@@ -440,6 +440,7 @@ export const handleCreateMessages = async (
   let finalChatMessages: ChatMessage[] = []
 
   if (isRegeneration) {
+
     const lastStartingMessage = chatMessages[chatMessages.length - 1].message
 
     const updatedMessage = await updateMessage(lastStartingMessage.id, {
@@ -447,10 +448,10 @@ export const handleCreateMessages = async (
       content: generatedText
     })
 
+
     chatMessages[chatMessages.length - 1].message = updatedMessage
 
     finalChatMessages = [...chatMessages]
-
     setChatMessages(finalChatMessages)
   } else {
     const createdMessages = await createMessages([

@@ -89,8 +89,10 @@ const buildBasePrompt = (
 export async function buildFinalMessages(
   payload: ChatPayload,
   profile: Tables<"profiles">,
-  chatImages: MessageImage[]
+  chatImages: MessageImage[],
+  isRegeneration:boolean
 ) {
+
   const {
     chatSettings,
     workspaceInstructions,
@@ -99,7 +101,7 @@ export async function buildFinalMessages(
     messageFileItems,
     chatFileItems
   } = payload
-
+  const chatMessageRetrieve =  isRegeneration? [...chatMessages].slice(0,-1): [...chatMessages]
   const [BUILT_PROMPT, language] = buildBasePrompt(
     chatSettings.prompt,
     chatSettings.includeProfileContext ? profile.profile_context || "" : "",
@@ -110,10 +112,11 @@ export async function buildFinalMessages(
   const CHUNK_SIZE = chatSettings.contextLength
   const PROMPT_TOKENS = encode(chatSettings.prompt).length
 
-  let remainingTokens = CHUNK_SIZE - PROMPT_TOKENS - BUILD_PROMPT_TOKENS
 
-  const processedChatMessages = chatMessages.map((chatMessage, index) => {
-    const nextChatMessage = chatMessages[index + 1]
+  
+  let remainingTokens = CHUNK_SIZE - PROMPT_TOKENS - BUILD_PROMPT_TOKENS
+  const processedChatMessages = chatMessageRetrieve.map((chatMessage, index) => {
+    const nextChatMessage = chatMessageRetrieve[index + 1]
     if (nextChatMessage === undefined) {
       return chatMessage
     }

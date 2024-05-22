@@ -105,6 +105,7 @@ export const Message: FC<MessageProps> = ({
 
   const handleRegenerate = async () => {
     setIsGenerating(true)
+
     await handleSendMessage(
       editedMessage || chatMessages[chatMessages.length - 2].message.content,
       chatMessages,
@@ -309,7 +310,7 @@ export const Message: FC<MessageProps> = ({
           )}
         </div>
 
-        {fileItems.length > 0 && (
+        {/* {fileItems.length > 0 && (
           <div className="border-primary mt-6 border-t pt-4 font-bold">
             {!viewSources ? (
               <div
@@ -374,7 +375,7 @@ export const Message: FC<MessageProps> = ({
               </>
             )}
           </div>
-        )}
+        )} */}
 
         <div className="mt-3 flex flex-wrap gap-2">
           {message.image_paths.map((path, index) => {
