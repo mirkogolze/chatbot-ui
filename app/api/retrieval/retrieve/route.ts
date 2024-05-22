@@ -14,10 +14,10 @@ export async function POST(request: Request) {
       fileIds: string[]
       vectorNames: string[]
       embeddingsProvider:
-        | "openai"
-        | "local"
-        | "multilingual-e5-large"
-        | "multilingual-e5-small"
+      | "openai"
+      | "local"
+      | "multilingual-e5-large"
+      | "multilingual-e5-small"
       sourceCount: number
     }
 
@@ -61,21 +61,31 @@ export async function POST(request: Request) {
         model: "text-embedding-3-small",
         input: userInput
       })
-
       const openaiEmbedding = response.data.map(item => item.embedding)[0]
+      if (process.env.EMBEDDING_STORAGE == "qdrant") {
+        const qclient = new qDrant()
+        chunks = await qclient.searchEmbeddings(
+          uniqueFileIds,
+          uniqueVectorNames,
+          profile.user_id,
+          openaiEmbedding,
+          embeddingsProvider
+        )
+      } else {
+        const { data: openaiFileItems, error: openaiError } =
+          await supabaseAdmin.rpc("match_file_items_openai", {
+            query_embedding: openaiEmbedding as any,
+            match_count: sourceCount,
+            file_ids: uniqueFileIds
+          })
 
-      const { data: openaiFileItems, error: openaiError } =
-        await supabaseAdmin.rpc("match_file_items_openai", {
-          query_embedding: openaiEmbedding as any,
-          match_count: sourceCount,
-          file_ids: uniqueFileIds
-        })
-
-      if (openaiError) {
-        throw openaiError
+        if (openaiError) {
+          throw openaiError
+        }
+        chunks = openaiFileItems
       }
 
-      chunks = openaiFileItems
+
     } else if (embeddingsProvider === "local") {
       const localEmbedding = await generateLocalEmbedding(userInput)
 

@@ -23,7 +23,9 @@ export const processCSV = async (csv: Blob): Promise<FileItemChunk[]> => {
 
     chunks.push({
       content: doc.pageContent,
-      tokens: encode(doc.pageContent).length
+      tokens: encode(doc.pageContent).length,
+      type: "csv",
+      source: "",
     })
   }
 
