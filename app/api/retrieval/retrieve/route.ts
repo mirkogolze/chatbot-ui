@@ -14,10 +14,10 @@ export async function POST(request: Request) {
       fileIds: string[]
       vectorNames: string[]
       embeddingsProvider:
-      | "openai"
-      | "local"
-      | "multilingual-e5-large"
-      | "multilingual-e5-small"
+        | "openai"
+        | "local"
+        | "multilingual-e5-large"
+        | "multilingual-e5-small"
       sourceCount: number
     }
 
@@ -84,8 +84,6 @@ export async function POST(request: Request) {
         }
         chunks = openaiFileItems
       }
-
-
     } else if (embeddingsProvider === "local") {
       const localEmbedding = await generateLocalEmbedding(userInput)
 

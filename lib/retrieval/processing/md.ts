@@ -26,7 +26,7 @@ export const processMarkdown = async (
       content: doc.pageContent,
       tokens: encode(doc.pageContent).length,
       type: "md",
-      source: "",
+      source: ""
     })
   }
 

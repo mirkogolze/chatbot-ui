@@ -19,7 +19,7 @@ export const processDocX = async (text: string): Promise<FileItemChunk[]> => {
       content: doc.pageContent,
       tokens: encode(doc.pageContent).length,
       type: "DocX",
-      source: "",
+      source: ""
     })
   }
 

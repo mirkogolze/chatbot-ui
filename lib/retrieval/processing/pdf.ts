@@ -24,7 +24,7 @@ export const processPdf = async (pdf: Blob): Promise<FileItemChunk[]> => {
       content: doc.pageContent,
       tokens: encode(doc.pageContent).length,
       type: "pdf",
-      source: "",
+      source: ""
     })
   }
 
