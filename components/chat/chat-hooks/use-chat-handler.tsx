@@ -278,7 +278,6 @@ export const useChatHandler = () => {
           selectedAssistant
         )
 
-
       let payload: ChatPayload = {
         chatSettings: chatSettings!,
         workspaceInstructions: selectedWorkspace!.instructions || "",
