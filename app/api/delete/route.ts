@@ -1,8 +1,7 @@
 import { qDrant } from "@/lib/qdrant"
-import {withErrorHandler} from "@/lib/middleware";
+import { withErrorHandler } from "@/lib/middleware"
 
-
-export const POST =withErrorHandler(async (json:any)=> {
+export const POST = withErrorHandler(async (json: any) => {
   const { userId, fileId, embeddingsProvider } = json as {
     userId: string
     fileId: string
@@ -14,5 +13,4 @@ export const POST =withErrorHandler(async (json:any)=> {
   return new Response(JSON.stringify({}), {
     status: 200
   })
-
-});
+})

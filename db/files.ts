@@ -135,8 +135,6 @@ export const createFile = async (
     file_path: filePath
   })
 
-
-
   const response = await fetch("/api/retrieval/process", {
     method: "POST",
     headers: {
@@ -144,7 +142,7 @@ export const createFile = async (
     },
     body: JSON.stringify({
       file_id: createdFile.id,
-      embeddingsProvider:embeddingsProvider
+      embeddingsProvider: embeddingsProvider
     })
   })
 

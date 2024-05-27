@@ -5,9 +5,9 @@ import { createClient } from "@supabase/supabase-js"
 import OpenAI from "openai"
 
 import { qDrant } from "@/lib/qdrant"
-import {withErrorHandler} from "@/lib/middleware";
+import { withErrorHandler } from "@/lib/middleware"
 
-export const POST = withErrorHandler(async (json: any)=> {
+export const POST = withErrorHandler(async (json: any) => {
   // const json = await request.json()
   const { userInput, fileIds, vectorNames, embeddingsProvider, sourceCount } =
     json as {
@@ -163,4 +163,4 @@ export const POST = withErrorHandler(async (json: any)=> {
   //     status: errorCode
   //    })
   //}
-});
+})

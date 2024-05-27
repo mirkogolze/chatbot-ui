@@ -14,189 +14,183 @@ import { NextResponse } from "next/server"
 import OpenAI from "openai"
 
 import { qDrant } from "@/lib/qdrant"
-import {withErrorHandler} from "@/lib/middleware";
+import { withErrorHandler } from "@/lib/middleware"
 
+export const POST = withErrorHandler(async (formData: any) => {
+  const supabaseAdmin = createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
-export const POST = withErrorHandler(async (formData:any)=> {
+  const profile = await getServerProfile()
 
-    const supabaseAdmin = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+  const file_id = formData["file_id"] as string
+  const embeddingsProvider = formData["embeddingsProvider"] as string
+
+  const { data: fileMetadata, error: metadataError } = await supabaseAdmin
+    .from("files")
+    .select("*")
+    .eq("id", file_id)
+    .single()
+
+  if (metadataError) {
+    throw new Error(
+      `Failed to retrieve file metadata: ${metadataError.message}`
     )
+  }
 
-    const profile = await getServerProfile()
+  if (!fileMetadata) {
+    throw new Error("File not found")
+  }
 
-    const file_id = formData["file_id"] as string
-    const embeddingsProvider = formData["embeddingsProvider"] as string
+  if (fileMetadata.user_id !== profile.user_id) {
+    throw new Error("Unauthorized")
+  }
 
-    const { data: fileMetadata, error: metadataError } = await supabaseAdmin
-      .from("files")
-      .select("*")
-      .eq("id", file_id)
-      .single()
+  const { data: file, error: fileError } = await supabaseAdmin.storage
+    .from("files")
+    .download(fileMetadata.file_path)
 
-    if (metadataError) {
-      throw new Error(
-        `Failed to retrieve file metadata: ${metadataError.message}`
-      )
-    }
+  if (fileError)
+    throw new Error(`Failed to retrieve file: ${fileError.message}`)
 
-    if (!fileMetadata) {
-      throw new Error("File not found")
-    }
+  const fileBuffer = Buffer.from(await file.arrayBuffer())
+  const blob = new Blob([fileBuffer])
+  const fileExtension = fileMetadata.name.split(".").pop()?.toLowerCase()
 
-    if (fileMetadata.user_id !== profile.user_id) {
-      throw new Error("Unauthorized")
-    }
-
-    const { data: file, error: fileError } = await supabaseAdmin.storage
-      .from("files")
-      .download(fileMetadata.file_path)
-
-    if (fileError)
-      throw new Error(`Failed to retrieve file: ${fileError.message}`)
-
-    const fileBuffer = Buffer.from(await file.arrayBuffer())
-    const blob = new Blob([fileBuffer])
-    const fileExtension = fileMetadata.name.split(".").pop()?.toLowerCase()
-
-    if (embeddingsProvider === "openai") {
-      try {
-        if (profile.use_azure_openai) {
-          checkApiKey(profile.azure_openai_api_key, "Azure OpenAI")
-        } else {
-          checkApiKey(profile.openai_api_key, "OpenAI")
-        }
-      } catch (error: any) {
-        error.message =
-          error.message +
-          ", make sure it is configured or else use local embeddings"
-        throw error
+  if (embeddingsProvider === "openai") {
+    try {
+      if (profile.use_azure_openai) {
+        checkApiKey(profile.azure_openai_api_key, "Azure OpenAI")
+      } else {
+        checkApiKey(profile.openai_api_key, "OpenAI")
       }
+    } catch (error: any) {
+      error.message =
+        error.message +
+        ", make sure it is configured or else use local embeddings"
+      throw error
     }
+  }
 
-    let chunks: FileItemChunk[] = []
+  let chunks: FileItemChunk[] = []
 
-    switch (fileExtension) {
-      case "csv":
-        chunks = await processCSV(blob)
-        break
-      case "json":
-        chunks = await processJSON(blob)
-        break
-      case "md":
-        chunks = await processMarkdown(blob)
-        break
-      case "pdf":
-        chunks = await processPdf(blob)
-        break
-      case "txt":
-        chunks = await processTxt(blob)
-        break
-      default:
-        return new NextResponse("Unsupported file type", {
-          status: 400
-        })
-    }
-
-    let embeddings: any = []
-
-    let openai
-    if (profile.use_azure_openai) {
-      openai = new OpenAI({
-        apiKey: profile.azure_openai_api_key || "",
-        baseURL: `${profile.azure_openai_endpoint}/openai/deployments/${profile.azure_openai_embeddings_id}`,
-        defaultQuery: { "api-version": "2023-12-01-preview" },
-        defaultHeaders: { "api-key": profile.azure_openai_api_key }
+  switch (fileExtension) {
+    case "csv":
+      chunks = await processCSV(blob)
+      break
+    case "json":
+      chunks = await processJSON(blob)
+      break
+    case "md":
+      chunks = await processMarkdown(blob)
+      break
+    case "pdf":
+      chunks = await processPdf(blob)
+      break
+    case "txt":
+      chunks = await processTxt(blob)
+      break
+    default:
+      return new NextResponse("Unsupported file type", {
+        status: 400
       })
-    } else {
-      openai = new OpenAI({
-        apiKey: profile.openai_api_key || "",
-        organization: profile.openai_organization_id
-      })
-    }
+  }
 
-    if (embeddingsProvider === "openai") {
-      const response = await openai.embeddings.create({
-        model: "text-embedding-3-small",
-        input: chunks.map(chunk => chunk.content)
-      })
+  let embeddings: any = []
 
-      embeddings = response.data.map((item: any) => {
-        return item.embedding
-      })
-    } else if (embeddingsProvider === "local") {
-      const embeddingPromises = chunks.map(async chunk => {
-        try {
-          return await generateLocalEmbedding(chunk.content)
-        } catch (error) {
-          console.error(`Error generating embedding for chunk: ${chunk}`, error)
+  let openai
+  if (profile.use_azure_openai) {
+    openai = new OpenAI({
+      apiKey: profile.azure_openai_api_key || "",
+      baseURL: `${profile.azure_openai_endpoint}/openai/deployments/${profile.azure_openai_embeddings_id}`,
+      defaultQuery: { "api-version": "2023-12-01-preview" },
+      defaultHeaders: { "api-key": profile.azure_openai_api_key }
+    })
+  } else {
+    openai = new OpenAI({
+      apiKey: profile.openai_api_key || "",
+      organization: profile.openai_organization_id
+    })
+  }
 
-          return null
-        }
-      })
-
-      embeddings = await Promise.all(embeddingPromises)
-    } else if (
-      embeddingsProvider === "multilingual-e5-large" ||
-      embeddingsProvider === "multilingual-e5-small"
-    ) {
-      const customOpenai = new OpenAI({
-        baseURL: process.env.OPENAI_BASE_URL,
-        apiKey: "DUMMY"
-      })
-      const response = await customOpenai.embeddings.create({
-        model: embeddingsProvider,
-        input: chunks.map(chunk => chunk.content)
-      })
-
-      embeddings = response.data.map((item: any) => {
-        return item.embedding
-      })
-    }
-    let totalTokens: number
-    if (process.env.EMBEDDING_STORAGE == "qdrant") {
-      const qclient = new qDrant()
-      const file_items = await qclient.addEmbeddings(
-        profile.user_id,
-        embeddings,
-        file_id,
-        chunks,
-        embeddingsProvider
-      )
-      totalTokens = file_items.reduce(
-        (acc, item) => acc + item.payload.tokens,
-        0
-      )
-    } else {
-      const file_items = chunks.map((chunk, index) => ({
-        file_id,
-        user_id: profile.user_id,
-        content: chunk.content,
-        tokens: chunk.tokens,
-        openai_embedding:
-          embeddingsProvider === "openai" ||
-          embeddingsProvider === "multilingual-e5-small" ||
-          embeddingsProvider === "multilingual-e5-large"
-            ? ((embeddings[index] || null) as any)
-            : null,
-        local_embedding:
-          embeddingsProvider === "local"
-            ? ((embeddings[index] || null) as any)
-            : null
-      }))
-
-      await supabaseAdmin.from("file_items").upsert(file_items)
-      totalTokens = file_items.reduce((acc, item) => acc + item.tokens, 0)
-    }
-
-    await supabaseAdmin
-      .from("files")
-      .update({ tokens: totalTokens })
-      .eq("id", file_id)
-
-    return new NextResponse("Embed Successful", {
-      status: 200
+  if (embeddingsProvider === "openai") {
+    const response = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: chunks.map(chunk => chunk.content)
     })
 
-});
+    embeddings = response.data.map((item: any) => {
+      return item.embedding
+    })
+  } else if (embeddingsProvider === "local") {
+    const embeddingPromises = chunks.map(async chunk => {
+      try {
+        return await generateLocalEmbedding(chunk.content)
+      } catch (error) {
+        console.error(`Error generating embedding for chunk: ${chunk}`, error)
+
+        return null
+      }
+    })
+
+    embeddings = await Promise.all(embeddingPromises)
+  } else if (
+    embeddingsProvider === "multilingual-e5-large" ||
+    embeddingsProvider === "multilingual-e5-small"
+  ) {
+    const customOpenai = new OpenAI({
+      baseURL: process.env.OPENAI_BASE_URL,
+      apiKey: "DUMMY"
+    })
+    const response = await customOpenai.embeddings.create({
+      model: embeddingsProvider,
+      input: chunks.map(chunk => chunk.content)
+    })
+
+    embeddings = response.data.map((item: any) => {
+      return item.embedding
+    })
+  }
+  let totalTokens: number
+  if (process.env.EMBEDDING_STORAGE == "qdrant") {
+    const qclient = new qDrant()
+    const file_items = await qclient.addEmbeddings(
+      profile.user_id,
+      embeddings,
+      file_id,
+      chunks,
+      embeddingsProvider
+    )
+    totalTokens = file_items.reduce((acc, item) => acc + item.payload.tokens, 0)
+  } else {
+    const file_items = chunks.map((chunk, index) => ({
+      file_id,
+      user_id: profile.user_id,
+      content: chunk.content,
+      tokens: chunk.tokens,
+      openai_embedding:
+        embeddingsProvider === "openai" ||
+        embeddingsProvider === "multilingual-e5-small" ||
+        embeddingsProvider === "multilingual-e5-large"
+          ? ((embeddings[index] || null) as any)
+          : null,
+      local_embedding:
+        embeddingsProvider === "local"
+          ? ((embeddings[index] || null) as any)
+          : null
+    }))
+
+    await supabaseAdmin.from("file_items").upsert(file_items)
+    totalTokens = file_items.reduce((acc, item) => acc + item.tokens, 0)
+  }
+
+  await supabaseAdmin
+    .from("files")
+    .update({ tokens: totalTokens })
+    .eq("id", file_id)
+
+  return new NextResponse("Embed Successful", {
+    status: 200
+  })
+})

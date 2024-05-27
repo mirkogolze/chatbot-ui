@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         break
       case "gpt-4o":
         DEPLOYMENT_ID = "gpt-4o"
-        break  
+        break
       default:
         return new Response(JSON.stringify({ message: "Model not found" }), {
           status: 400
