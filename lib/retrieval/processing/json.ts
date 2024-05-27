@@ -26,7 +26,9 @@ export const processJSON = async (json: Blob): Promise<FileItemChunk[]> => {
 
     chunks.push({
       content: doc.pageContent,
-      tokens: encode(doc.pageContent).length
+      tokens: encode(doc.pageContent).length,
+      type: "json",
+      source: ""
     })
   }
 

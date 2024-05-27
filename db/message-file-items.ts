@@ -23,14 +23,5 @@ export const getMessageFileItemsByMessageId = async (messageId: string) => {
 export const createMessageFileItems = async (
   messageFileItems: TablesInsert<"message_file_items">[]
 ) => {
-  const { data: createdMessageFileItems, error } = await supabase
-    .from("message_file_items")
-    .insert(messageFileItems)
-    .select("*")
-
-  if (!createdMessageFileItems) {
-    throw new Error(error.message)
-  }
-
-  return createdMessageFileItems
+  return messageFileItems
 }

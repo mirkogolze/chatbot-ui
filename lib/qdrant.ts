@@ -56,7 +56,7 @@ export class qDrant {
         source: chunk.source
       }
     }))
-    this.qclient.upsert(user_id + embeddingsProvider, {
+    await this.qclient.upsert(user_id + embeddingsProvider, {
       wait: true,
       points: file_items
     })

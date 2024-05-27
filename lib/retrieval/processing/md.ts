@@ -24,7 +24,9 @@ export const processMarkdown = async (
 
     chunks.push({
       content: doc.pageContent,
-      tokens: encode(doc.pageContent).length
+      tokens: encode(doc.pageContent).length,
+      type: "md",
+      source: ""
     })
   }
 
