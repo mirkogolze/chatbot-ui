@@ -7,7 +7,7 @@ interface langDefintion {
   BEGIN_SOURCE: string
   END_SOURCE: string
   SOURCE_INSTRUCT: string
-  SOURCE_INSTRUCT_WITH_SORCES: string,
+  SOURCE_INSTRUCT_WITH_SORCES: string
   SOURCE_LINK: string
   SOURCE_TOKEN: number
   ROLE: string
@@ -253,7 +253,7 @@ function buildRetrievalText(
   const retrievalText: string[] = []
   let totalTokens: number = 0
   const mapping = sourcesMAP.get(language)
-  let useInstructWithSources = false;
+  let useInstructWithSources = false
   for (let item of fileItems) {
     const extraTokens = mapping?.SOURCE_TOKEN || 10
     const beginSource = mapping?.BEGIN_SOURCE || "BEGIN SOURCE"
@@ -275,11 +275,10 @@ function buildRetrievalText(
     )
   }
 
-  const instruct = useInstructWithSources ? mapping?.SOURCE_INSTRUCT_WITH_SORCES : mapping?.SOURCE_INSTRUCT
-  return [
-    `${instruct}\n\n${retrievalText.join("\n\n")}`,
-    totalTokens
-  ]
+  const instruct = useInstructWithSources
+    ? mapping?.SOURCE_INSTRUCT_WITH_SORCES
+    : mapping?.SOURCE_INSTRUCT
+  return [`${instruct}\n\n${retrievalText.join("\n\n")}`, totalTokens]
 }
 
 export async function buildGoogleGeminiFinalMessages(
