@@ -5,9 +5,10 @@ import { createClient } from "@supabase/supabase-js"
 import OpenAI from "openai"
 
 import { qDrant } from "@/lib/qdrant"
+import {withErrorHandler} from "@/lib/middleware";
 
-export async function POST(request: Request) {
-  const json = await request.json()
+export const POST = withErrorHandler(async (json: any)=> {
+  // const json = await request.json()
   const { userInput, fileIds, vectorNames, embeddingsProvider, sourceCount } =
     json as {
       userInput: string
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
         | "multilingual-e5-small"
       sourceCount: number
     }
-
+  // throw Error("BLA BLA");
   const uniqueFileIds = [...new Set(fileIds)]
   const uniqueVectorNames = [...new Set(vectorNames)]
   // try {
@@ -147,6 +148,7 @@ export async function POST(request: Request) {
   }
 
   const mostSimilarChunks = chunks?.sort((a, b) => b.similarity - a.similarity)
+
   return new Response(JSON.stringify({ results: mostSimilarChunks }), {
     status: 200
   })
@@ -161,4 +163,4 @@ export async function POST(request: Request) {
   //     status: errorCode
   //    })
   //}
-}
+});

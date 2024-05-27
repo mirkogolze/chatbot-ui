@@ -14,9 +14,11 @@ import { NextResponse } from "next/server"
 import OpenAI from "openai"
 
 import { qDrant } from "@/lib/qdrant"
+import {withErrorHandler} from "@/lib/middleware";
 
-export async function POST(req: Request) {
-  try {
+
+export const POST = withErrorHandler(async (formData:any)=> {
+
     const supabaseAdmin = createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -24,10 +26,8 @@ export async function POST(req: Request) {
 
     const profile = await getServerProfile()
 
-    const formData = await req.formData()
-
-    const file_id = formData.get("file_id") as string
-    const embeddingsProvider = formData.get("embeddingsProvider") as string
+    const file_id = formData["file_id"] as string
+    const embeddingsProvider = formData["embeddingsProvider"] as string
 
     const { data: fileMetadata, error: metadataError } = await supabaseAdmin
       .from("files")
@@ -198,12 +198,5 @@ export async function POST(req: Request) {
     return new NextResponse("Embed Successful", {
       status: 200
     })
-  } catch (error: any) {
-    //const errorMessage = error?.message || "An unexpected error occurred"
-    //const errorCode = error.status || 500
-    //return new Response(JSON.stringify({ message: errorMessage }), {
-    //  status: errorCode
-    //})
-    throw error
-  }
-}
+
+});

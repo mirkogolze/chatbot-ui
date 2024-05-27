@@ -135,13 +135,17 @@ export const createFile = async (
     file_path: filePath
   })
 
-  const formData = new FormData()
-  formData.append("file_id", createdFile.id)
-  formData.append("embeddingsProvider", embeddingsProvider)
+
 
   const response = await fetch("/api/retrieval/process", {
     method: "POST",
-    body: formData
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      file_id: createdFile.id,
+      embeddingsProvider:embeddingsProvider
+    })
   })
 
   if (!response.ok) {
