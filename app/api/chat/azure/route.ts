@@ -29,6 +29,9 @@ export async function POST(request: Request) {
       case "gpt-4-vision-preview":
         DEPLOYMENT_ID = profile.azure_openai_45_vision_id || ""
         break
+      case "gpt-4o":
+        DEPLOYMENT_ID = "gpt-4o"
+        break  
       default:
         return new Response(JSON.stringify({ message: "Model not found" }), {
           status: 400
