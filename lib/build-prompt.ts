@@ -7,6 +7,7 @@ interface langDefintion {
   BEGIN_SOURCE: string
   END_SOURCE: string
   SOURCE_INSTRUCT: string
+  SOURCE_INSTRUCT_WITH_SORCES: string,
   SOURCE_LINK: string
   SOURCE_TOKEN: number
   ROLE: string
@@ -27,8 +28,10 @@ sourcesMAP.set("deu", {
   SOURCE_TOKEN: 12,
   SOURCE_LINK: "QUELLE",
   SOURCE_INSTRUCT: `Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, 
-    sage: "Ich weiß es nicht."\nJedes Dokument kann eine <QUELLE> enthalten. Gib je einen Link auf die von dir verwendete Quelle zurück. 
-    Achte jedoch darauf, jede Quelle nur EINMAL aufzuzählen! Liste die Quellen als Markdown-Liste auf.`,
+    sage: "Ich weiß es nicht."`,
+  SOURCE_INSTRUCT_WITH_SORCES: `Verwende die folgenden Quellen, um die Frage des Benutzers zu beantworten. Wenn du die Antwort aus den Quellen nicht beantworten kannst, 
+  sage: "Ich weiß es nicht."\nJedes Dokument kann eine <QUELLE> enthalten. Gib je einen Link auf die von dir verwendete Quelle zurück. 
+  Achte jedoch darauf, jede Quelle nur EINMAL aufzuzählen! Liste die Quellen als Markdown-Liste auf.`,
   TODAY: "Heute ist der",
   ROLE_TEXT: "Du bist keine KI. Du bist",
   USER_INFO: "Nutzer Information",
@@ -42,6 +45,7 @@ sourcesMAP.set("eng", {
   SOURCE_TOKEN: 10,
   SOURCE_LINK: "SOURCE_HREF",
   SOURCE_INSTRUCT: `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know.`,
+  SOURCE_INSTRUCT_WITH_SORCES: `You may use the following sources if needed to answer the user's question. If you don't know the answer, say "I don't know.`,
   TODAY: "Today is",
   ROLE_TEXT: "You are not an AI. You are",
   USER_INFO: "User Info",
@@ -249,6 +253,7 @@ function buildRetrievalText(
   const retrievalText: string[] = []
   let totalTokens: number = 0
   const mapping = sourcesMAP.get(language)
+  let useInstructWithSources = false;
   for (let item of fileItems) {
     const extraTokens = mapping?.SOURCE_TOKEN || 10
     const beginSource = mapping?.BEGIN_SOURCE || "BEGIN SOURCE"
@@ -260,6 +265,7 @@ function buildRetrievalText(
     totalTokens += item.tokens + extraTokens
     let source = ""
     if (item.source) {
+      useInstructWithSources = true
       source = `\n<${soureceLink}>${item.source}</${soureceLink}>`
       totalTokens += encode(item.source).length + 10
     }
@@ -269,8 +275,9 @@ function buildRetrievalText(
     )
   }
 
+  const instruct = useInstructWithSources ? mapping?.SOURCE_INSTRUCT_WITH_SORCES : mapping?.SOURCE_INSTRUCT
   return [
-    `${mapping?.SOURCE_INSTRUCT}\n\n${retrievalText.join("\n\n")}`,
+    `${instruct}\n\n${retrievalText.join("\n\n")}`,
     totalTokens
   ]
 }
