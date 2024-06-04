@@ -18,6 +18,7 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
   const [name, setName] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState("")
+  const [summerize, setSummerize] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const handleSelectedFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +45,7 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
           user_id: profile.user_id,
           name,
           description,
+          summerize,
           file_path: "",
           size: selectedFile?.size || 0,
           tokens: 0,
@@ -85,6 +87,16 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
               value={name}
               onChange={e => setDescription(e.target.value)}
               maxLength={FILE_DESCRIPTION_MAX}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Summerize before embedding</Label>
+
+            <Input
+              // onChange={e => setDescription(e.target.value)}
+              type="checkbox"
+              className="w-5"
+              onChange={e => setSummerize(e.target.checked)}
             />
           </div>
         </>

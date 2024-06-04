@@ -15,6 +15,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
+  const [summerize, setSummerize] = useState(file.summerize)
 
   const getLinkAndView = async () => {
     const link = await getFileFromStorage(file.file_path)
@@ -65,6 +66,17 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
               value={description}
               onChange={e => setDescription(e.target.value)}
               maxLength={FILE_DESCRIPTION_MAX}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Summerize before embedding</Label>
+
+            <Input
+              // onChange={e => setDescription(e.target.value)}
+              type="checkbox"
+              className="w-5"
+              checked={summerize}
+            disabled
             />
           </div>
         </>

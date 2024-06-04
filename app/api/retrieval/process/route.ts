@@ -38,7 +38,6 @@ export const POST = withErrorHandler(async (formData: any) => {
       `Failed to retrieve file metadata: ${metadataError.message}`
     )
   }
-
   if (!fileMetadata) {
     throw new Error("File not found")
   }
@@ -47,13 +46,14 @@ export const POST = withErrorHandler(async (formData: any) => {
     throw new Error("Unauthorized")
   }
 
+
   const { data: file, error: fileError } = await supabaseAdmin.storage
     .from("files")
     .download(fileMetadata.file_path)
 
   if (fileError)
     throw new Error(`Failed to retrieve file: ${fileError.message}`)
-
+  const summerize = fileMetadata.summerize;
   const fileBuffer = Buffer.from(await file.arrayBuffer())
   const blob = new Blob([fileBuffer])
   const fileExtension = fileMetadata.name.split(".").pop()?.toLowerCase()
@@ -77,26 +77,50 @@ export const POST = withErrorHandler(async (formData: any) => {
 
   switch (fileExtension) {
     case "csv":
-      chunks = await processCSV(blob)
+      chunks = await processCSV(blob,summerize)
       break
     case "json":
-      chunks = await processJSON(blob)
+      chunks = await processJSON(blob,summerize)
       break
     case "md":
-      chunks = await processMarkdown(blob)
+      chunks = await processMarkdown(blob,summerize)
       break
     case "pdf":
-      chunks = await processPdf(blob)
+      chunks = await processPdf(blob,summerize)
       break
     case "txt":
-      chunks = await processTxt(blob)
+      chunks = await processTxt(blob,summerize)
       break
     default:
       return new NextResponse("Unsupported file type", {
         status: 400
       })
   }
-
+  
+  if(summerize){
+    const customOpenai = new OpenAI({
+      baseURL: process.env.OPENAI_BASE_URL,
+      apiKey: "DUMMY"
+    })
+    const response = chunks.map(chunk => customOpenai.chat.completions.create({
+      model: "mixtral-8x7B",
+      messages: [{
+          role: "system",
+          content: "You are a summerization model, summerize the text in the given language of the text. Just return the summerization. Be as short as possible, but try to contain every important information. return just the summerization, without any pretext"
+        },
+        {
+          role: "user",
+          content:  chunk.content
+        }
+      ],
+      temperature: 0.0,
+      max_tokens:512
+    }));
+    for(let i = 0; i < response.length; i++){
+      chunks[i].content = (await response[i]).choices[0].message.content || "";
+      chunks[i].tokens = (await response[i]).usage?.completion_tokens || 512; 
+    }
+  }
   let embeddings: any = []
 
   let openai

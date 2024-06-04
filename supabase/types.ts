@@ -675,6 +675,7 @@ export type Database = {
           tokens: number
           updated_at?: string | null
           user_id: string
+          
         }
         Update: {
           content?: string
@@ -687,6 +688,7 @@ export type Database = {
           tokens?: number
           updated_at?: string | null
           user_id?: string
+
         }
         Relationships: [
           {
@@ -766,6 +768,7 @@ export type Database = {
           updated_at: string | null
           user_id: string
           embeddings_provider: string
+          summerize:boolean
         }
         Insert: {
           created_at?: string
@@ -781,6 +784,7 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           embeddings_provider: string
+          summerize:boolean
         }
         Update: {
           created_at?: string
@@ -796,6 +800,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           embeddings_provider?: string
+          summerize?:boolean
         }
         Relationships: [
           {

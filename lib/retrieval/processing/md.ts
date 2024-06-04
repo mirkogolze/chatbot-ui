@@ -4,15 +4,16 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { CHUNK_OVERLAP, CHUNK_SIZE } from "."
 
 export const processMarkdown = async (
-  markdown: Blob
+  markdown: Blob,
+  summerize:boolean
 ): Promise<FileItemChunk[]> => {
   const fileBuffer = Buffer.from(await markdown.arrayBuffer())
   const textDecoder = new TextDecoder("utf-8")
   const textContent = textDecoder.decode(fileBuffer)
 
   const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-    chunkSize: CHUNK_SIZE,
-    chunkOverlap: CHUNK_OVERLAP
+    chunkSize: !summerize ? CHUNK_SIZE : CHUNK_SIZE*8,
+    chunkOverlap: !summerize ?CHUNK_OVERLAP : CHUNK_OVERLAP*4,
   })
 
   const splitDocs = await splitter.createDocuments([textContent])
