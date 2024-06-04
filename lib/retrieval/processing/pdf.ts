@@ -4,14 +4,17 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
 import { CHUNK_OVERLAP, CHUNK_SIZE } from "."
 
-export const processPdf = async (pdf: Blob,summerize:boolean): Promise<FileItemChunk[]> => {
+export const processPdf = async (
+  pdf: Blob,
+  summerize: boolean
+): Promise<FileItemChunk[]> => {
   const loader = new PDFLoader(pdf)
   const docs = await loader.load()
   let completeText = docs.map(doc => doc.pageContent).join(" ")
 
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: !summerize ? CHUNK_SIZE : CHUNK_SIZE*8,
-    chunkOverlap: !summerize ?CHUNK_OVERLAP : CHUNK_OVERLAP*4,
+    chunkSize: !summerize ? CHUNK_SIZE : CHUNK_SIZE * 8,
+    chunkOverlap: !summerize ? CHUNK_OVERLAP : CHUNK_OVERLAP * 4
   })
   const splitDocs = await splitter.createDocuments([completeText])
 

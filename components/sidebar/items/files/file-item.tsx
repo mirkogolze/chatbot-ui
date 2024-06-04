@@ -76,7 +76,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
               type="checkbox"
               className="w-5"
               checked={summerize}
-            disabled
+              disabled
             />
           </div>
         </>
