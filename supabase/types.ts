@@ -784,7 +784,7 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           embeddings_provider: string
-          summerize:boolean
+          summerize?:boolean | false
         }
         Update: {
           created_at?: string
@@ -800,7 +800,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           embeddings_provider?: string
-          summerize?:boolean
+          summerize?:boolean | false
         }
         Relationships: [
           {
