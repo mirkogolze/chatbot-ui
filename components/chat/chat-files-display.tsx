@@ -16,6 +16,7 @@ import {
   IconX,
   Icon3dCubeSphere
 } from "@tabler/icons-react"
+import {FileIcon} from "../ui/file-icon";
 import Image from "next/image"
 import { FC, useContext, useState } from "react"
 import { Button } from "../ui/button"
@@ -195,28 +196,7 @@ export const ChatFilesDisplay: FC<ChatFilesDisplayProps> = ({}) => {
                   onClick={() => getLinkAndView(file)}
                 >
                   <div className="rounded bg-blue-500 p-2">
-                    {(() => {
-                      let fileExtension = file.type.includes("/")
-                        ? file.type.split("/")[1]
-                        : file.type
-
-                      switch (fileExtension) {
-                        case "pdf":
-                          return <IconFileTypePdf />
-                        case "markdown":
-                          return <IconMarkdown />
-                        case "txt":
-                          return <IconFileTypeTxt />
-                        case "json":
-                          return <IconJson />
-                        case "csv":
-                          return <IconFileTypeCsv />
-                        case "docx":
-                          return <IconFileTypeDocx />
-                        default:
-                          return <IconFileFilled />
-                      }
-                    })()}
+                    <FileIcon type={file.type}/>
                   </div>
 
                   <div className="truncate text-sm">

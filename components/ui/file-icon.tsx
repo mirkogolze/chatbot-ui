@@ -22,7 +22,7 @@ export const FileIcon: FC<FileIconProps> = ({ type, size = 32 }) => {
     return <IconFileTypePdf size={size} />
   } else if (type.includes("csv")) {
     return <IconFileTypeCsv size={size} />
-  } else if (type.includes("docx")) {
+  } else if (type.includes("docx") || type.includes("document")) {
     return <IconFileTypeDocx size={size} />
   } else if (type.includes("plain")) {
     return <IconFileText size={size} />

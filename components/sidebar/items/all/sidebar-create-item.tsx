@@ -70,25 +70,29 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
     presets: createPreset,
     prompts: createPrompt,
     files: async (
-      createState: { file: File } & TablesInsert<"files">,
+      createStates:  ({file:File} & TablesInsert<"files"> )[],
       workspaceId: string
     ) => {
       if (!selectedWorkspace) return
-
-      const { file, ...rest } = createState
-      rest.embeddings_provider = selectedWorkspace.embeddings_provider
-      const createdFile = await createFileBasedOnExtension(
-        file,
-        rest,
-        workspaceId,
-        selectedWorkspace.embeddings_provider as
-          | "openai"
-          | "local"
-          | "multilingual-e5-large"
-          | "multilingual-e5-small"
+      const createdFiles: TablesInsert<"files">[] = [];
+      for(let createState of createStates){
+        const { file, ...rest } = createState
+        rest.embeddings_provider = selectedWorkspace.embeddings_provider
+        createdFiles.push( await createFileBasedOnExtension(
+          file,
+          rest,
+          workspaceId,
+          selectedWorkspace.embeddings_provider as
+            | "openai"
+            | "local"
+            | "multilingual-e5-large"
+            | "multilingual-e5-small"
+        )
       )
+      }
+      
 
-      return createdFile
+      return createdFiles
     },
     collections: async (
       createState: {
@@ -205,8 +209,12 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
       setCreating(true)
 
       const newItem = await createFunction(createState, selectedWorkspace.id)
-
-      setStateFunction((prevItems: any) => [...prevItems, newItem])
+      if(Array.isArray(newItem)){
+        setStateFunction((prevItems: any) => [...prevItems, ...newItem])
+      }else{
+        setStateFunction((prevItems: any) => [...prevItems, newItem])
+      }
+      
 
       onOpenChange(false)
       setCreating(false)
