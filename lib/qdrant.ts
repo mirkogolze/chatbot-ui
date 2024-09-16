@@ -28,7 +28,8 @@ export class qDrant {
 
   constructor() {
     this.qclient = new QdrantClient({
-      url: process.env.QDRANT_URL!
+      url: process.env.QDRANT_URL,
+      port: parseInt(process.env.QDRANT_PORT || "6333", 10)
     })
   }
   public async addEmbeddings(

@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import * as winston from "winston"
 
 const logger = winston.createLogger({
-  level: "error",
-  format: winston.format.json(),
+  level: "warn",
   transports: [
-    new winston.transports.File({ filename: "error.log", level: "error" }),
     new winston.transports.Console()
   ]
 })

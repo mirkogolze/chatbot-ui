@@ -5,6 +5,7 @@ import { Database } from "@/supabase/types"
 import { FileItemChunk } from "@/types"
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
+import { qDrant } from "@/lib/qdrant"
 import OpenAI from "openai"
 
 export async function POST(req: Request) {
@@ -102,28 +103,39 @@ export async function POST(req: Request) {
         return item.embedding
       })
     }
+    let totalTokens:number;
+    if (process.env.EMBEDDING_STORAGE == "qdrant") {
+      const qclient = new qDrant()
+      const file_items = await qclient.addEmbeddings(
+        profile.user_id,
+        embeddings,
+        fileId,
+        chunks,
+        embeddingsProvider
+      )
+      totalTokens = file_items.reduce((acc, item) => acc + item.payload.tokens, 0)
+    } else {
+      const file_items = chunks.map((chunk, index) => ({
+        file_id: fileId,
+        user_id: profile.user_id,
+        content: chunk.content,
+        tokens: chunk.tokens,
+        openai_embedding:
+          embeddingsProvider === "openai" ||
+          embeddingsProvider === "multilingual-e5-small" ||
+          embeddingsProvider === "multilingual-e5-large"
+            ? ((embeddings[index] || null) as any)
+            : null,
+        local_embedding:
+          embeddingsProvider === "local"
+            ? ((embeddings[index] || null) as any)
+            : null
+      }))
 
-    const file_items = chunks.map((chunk, index) => ({
-      file_id: fileId,
-      user_id: profile.user_id,
-      content: chunk.content,
-      tokens: chunk.tokens,
-      openai_embedding:
-        embeddingsProvider === "openai" ||
-        embeddingsProvider === "multilingual-e5-small" ||
-        embeddingsProvider === "multilingual-e5-large"
-          ? ((embeddings[index] || null) as any)
-          : null,
-      local_embedding:
-        embeddingsProvider === "local"
-          ? ((embeddings[index] || null) as any)
-          : null
-    }))
+      await supabaseAdmin.from("file_items").upsert(file_items)
 
-    await supabaseAdmin.from("file_items").upsert(file_items)
-
-    const totalTokens = file_items.reduce((acc, item) => acc + item.tokens, 0)
-
+      totalTokens = file_items.reduce((acc, item) => acc + item.tokens, 0)
+  }
     await supabaseAdmin
       .from("files")
       .update({ tokens: totalTokens })
