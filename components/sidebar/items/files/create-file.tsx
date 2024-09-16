@@ -23,22 +23,23 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
 
   const handleSelectedFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
-    const files: File[] = [];
-    for(let i = 0; i< e.target.files.length; i++){
-      files.push(e.target.files[i]);
+    const files: File[] = []
+    for (let i = 0; i < e.target.files.length; i++) {
+      files.push(e.target.files[i])
     }
-    
 
     if (!files || files.length == 0) return
-    if(files.length == 1) {
-      setMultiFiles(false);
-      const fileNameWithoutExtension = files[0].name.split(".").slice(0, -1).join(".")
+    if (files.length == 1) {
+      setMultiFiles(false)
+      const fileNameWithoutExtension = files[0].name
+        .split(".")
+        .slice(0, -1)
+        .join(".")
       setName(fileNameWithoutExtension)
-    }else if(files.length > 1){
-      setMultiFiles(true);
+    } else if (files.length > 1) {
+      setMultiFiles(true)
     }
     setSelectedFiles(files)
-    
   }
 
   if (!profile) return null
@@ -48,8 +49,8 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
     <SidebarCreateItem
       contentType="files"
       createState={
-        selectedFiles?.map((selectedFile)=>{
-          if(multiFiles){
+        selectedFiles?.map(selectedFile => {
+          if (multiFiles) {
             return {
               file: selectedFile,
               user_id: profile.user_id,
@@ -61,8 +62,7 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
               type: selectedFile.type || 0,
               embeddings_provider: ""
             }
-
-          }else{
+          } else {
             return {
               file: selectedFile,
               user_id: profile.user_id,
@@ -75,10 +75,7 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
               embeddings_provider: ""
             }
           }
-           
-        } 
-        ) as TablesInsert<"files">[]
-        
+        }) as TablesInsert<"files">[]
       }
       isOpen={isOpen}
       isTyping={isTyping}
@@ -92,38 +89,37 @@ export const CreateFile: FC<CreateFileProps> = ({ isOpen, onOpenChange }) => {
               type="file"
               onChange={handleSelectedFile}
               accept={ACCEPTED_FILE_TYPES}
-            multiple/>
+              multiple
+            />
           </div>
-          {multiFiles?
-          <div></div>
-          :
-          <div>
-            <div className="space-y-1">
-              <Label>Name</Label>
+          {multiFiles ? (
+            <div></div>
+          ) : (
+            <div>
+              <div className="space-y-1">
+                <Label>Name</Label>
 
-              <Input
-                placeholder="File name..."
-                value={name}
-                onChange={e => setName(e.target.value)}
-                maxLength={FILE_NAME_MAX}
-              />
+                <Input
+                  placeholder="File name..."
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  maxLength={FILE_NAME_MAX}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label>Description</Label>
+
+                <Input
+                  placeholder="File description..."
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  maxLength={FILE_DESCRIPTION_MAX}
+                />
+              </div>
             </div>
-
-            <div className="space-y-1">
-              <Label>Description</Label>
-
-              <Input
-                placeholder="File description..."
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                maxLength={FILE_DESCRIPTION_MAX}
-              />
-            </div>
-          </div>
-          
-        }
-          </>
-        
+          )}
+        </>
       )}
     />
   )
