@@ -4,11 +4,13 @@ import {
   processJSON,
   processMarkdown,
   processPdf,
-  processTxt
+  processTxt,
+  chunking,
+  summerizeFunction
 } from "@/lib/retrieval/processing"
 import { checkApiKey, getServerProfile } from "@/lib/server/server-chat-helpers"
 import { Database } from "@/supabase/types"
-import { FileItemChunk } from "@/types"
+
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
 import OpenAI from "openai"
@@ -72,23 +74,23 @@ export const POST = withErrorHandler(async (formData: any) => {
     }
   }
 
-  let chunks: FileItemChunk[] = []
+  let textValue: string = "";
 
   switch (fileExtension) {
     case "csv":
-      chunks = await processCSV(blob, summerize)
+      textValue = await processCSV(blob)
       break
     case "json":
-      chunks = await processJSON(blob, summerize)
+      textValue = await processJSON(blob)
       break
     case "md":
-      chunks = await processMarkdown(blob, summerize)
+      textValue = await processMarkdown(blob)
       break
     case "pdf":
-      chunks = await processPdf(blob, summerize)
+      textValue = await processPdf(blob)
       break
     case "txt":
-      chunks = await processTxt(blob, summerize)
+      textValue = await processTxt(blob)
       break
     default:
       return new NextResponse("Unsupported file type", {
@@ -97,33 +99,9 @@ export const POST = withErrorHandler(async (formData: any) => {
   }
 
   if (summerize) {
-    const customOpenai = new OpenAI({
-      baseURL: process.env.OPENAI_BASE_URL,
-      apiKey: "DUMMY"
-    })
-    const response = chunks.map(chunk =>
-      customOpenai.chat.completions.create({
-        model: "mixtral-8x7B",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a summerization model, summerize the text in the given language of the text. Just return the summerization. Be as short as possible, but try to contain every important information. return just the summerization, without any pretext"
-          },
-          {
-            role: "user",
-            content: chunk.content
-          }
-        ],
-        temperature: 0.0,
-        max_tokens: 512
-      })
-    )
-    for (let i = 0; i < response.length; i++) {
-      chunks[i].content = (await response[i]).choices[0].message.content || ""
-      chunks[i].tokens = (await response[i]).usage?.completion_tokens || 512
-    }
+    textValue = await summerizeFunction(textValue);
   }
+  const chunks = await chunking(textValue, fileExtension);
   let embeddings: any = []
 
   let openai
