@@ -74,7 +74,7 @@ export const POST = withErrorHandler(async (formData: any) => {
     }
   }
 
-  let textValue: string = "";
+  let textValue: string = ""
 
   switch (fileExtension) {
     case "csv":
@@ -99,9 +99,9 @@ export const POST = withErrorHandler(async (formData: any) => {
   }
 
   if (summerize) {
-    textValue = await summerizeFunction(textValue);
+    textValue = await summerizeFunction(textValue)
   }
-  const chunks = await chunking(textValue, fileExtension);
+  const chunks = await chunking(textValue, fileExtension)
   let embeddings: any = []
 
   let openai
