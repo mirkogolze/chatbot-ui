@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         return item.embedding
       })
     }
-    let totalTokens:number;
+    let totalTokens: number
     if (process.env.EMBEDDING_STORAGE == "qdrant") {
       const qclient = new qDrant()
       const file_items = await qclient.addEmbeddings(
@@ -113,7 +113,10 @@ export async function POST(req: Request) {
         chunks,
         embeddingsProvider
       )
-      totalTokens = file_items.reduce((acc, item) => acc + item.payload.tokens, 0)
+      totalTokens = file_items.reduce(
+        (acc, item) => acc + item.payload.tokens,
+        0
+      )
     } else {
       const file_items = chunks.map((chunk, index) => ({
         file_id: fileId,
@@ -135,7 +138,7 @@ export async function POST(req: Request) {
       await supabaseAdmin.from("file_items").upsert(file_items)
 
       totalTokens = file_items.reduce((acc, item) => acc + item.tokens, 0)
-  }
+    }
     await supabaseAdmin
       .from("files")
       .update({ tokens: totalTokens })
