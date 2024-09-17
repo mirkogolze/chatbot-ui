@@ -6,6 +6,7 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/components/ui/sheet"
+import {Progress} from "@/components/ui/progress";
 import { ChatbotUIContext } from "@/context/context"
 import { createAssistantCollections } from "@/db/assistant-collections"
 import { createAssistantFiles } from "@/db/assistant-files"
@@ -64,6 +65,8 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   const [creating, setCreating] = useState(false)
+  const [multiFileLength, setMultiFileLength] = useState(0)
+  const [progress, setProgress] = useState(0)
 
   const createFunctions = {
     chats: createChat,
@@ -74,24 +77,28 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
       workspaceId: string
     ) => {
       if (!selectedWorkspace) return
-      const createdFiles: TablesInsert<"files">[] = []
-      for (let createState of createStates) {
+
+      setMultiFileLength(createState.length)
+      
+      let tmpProgress = 0;
+      const createdFiles: TablesInsert<"files">[] = await Promise.all(createStates.map(async (createState)=>{
         const { file, ...rest } = createState
         rest.embeddings_provider = selectedWorkspace.embeddings_provider
-        createdFiles.push(
-          await createFileBasedOnExtension(
-            file,
-            rest,
-            workspaceId,
-            selectedWorkspace.embeddings_provider as
-              | "openai"
-              | "local"
-              | "multilingual-e5-large"
-              | "multilingual-e5-small"
-          )
+        const result = await createFileBasedOnExtension(
+          file,
+          rest,
+          workspaceId,
+          selectedWorkspace.embeddings_provider as
+            | "openai"
+            | "local"
+            | "multilingual-e5-large"
+            | "multilingual-e5-small"
         )
-      }
+        tmpProgress++;
+        setProgress(tmpProgress);
+        return result ;
 
+      }))
       return createdFiles
     },
     collections: async (
@@ -207,6 +214,7 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
       if (!createFunction || !setStateFunction) return
 
       setCreating(true)
+      setProgress(0)
 
       const newItem = await createFunction(createState, selectedWorkspace.id)
       if (Array.isArray(newItem)) {
@@ -237,6 +245,9 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
         side="left"
         onKeyDown={handleKeyDown}
       >
+        {(contentType === "files" && creating && multiFileLength > 1) && (
+        <Progress value={progress} max={multiFileLength}></Progress>
+      )}
         <div className="grow overflow-auto">
           <SheetHeader>
             <SheetTitle className="text-2xl font-bold">
