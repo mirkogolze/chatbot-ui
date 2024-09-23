@@ -227,10 +227,7 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
         <Select
           value={chatSettings.embeddingsProvider}
           onValueChange={(
-            embeddingsProvider:
-              | "openai"
-              | "local"
-              | "multilingual-e5-large"
+            embeddingsProvider: "openai" | "local" | "multilingual-e5-large"
           ) => {
             onChangeChatSettings({
               ...chatSettings,

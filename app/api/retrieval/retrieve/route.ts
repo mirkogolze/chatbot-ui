@@ -14,10 +14,7 @@ export const POST = withErrorHandler(async (json: any) => {
       userInput: string
       fileIds: string[]
       vectorNames: string[]
-      embeddingsProvider:
-        | "openai"
-        | "local"
-        | "multilingual-e5-large"
+      embeddingsProvider: "openai" | "local" | "multilingual-e5-large"
       sourceCount: number
     }
   // throw Error("BLA BLA");
@@ -109,9 +106,7 @@ export const POST = withErrorHandler(async (json: any) => {
       }
       chunks = localFileItems
     }
-  } else if (
-    embeddingsProvider === "multilingual-e5-large" 
-  ) {
+  } else if (embeddingsProvider === "multilingual-e5-large") {
     const customOpenai = new OpenAI({
       baseURL: process.env.OPENAI_BASE_URL,
       apiKey: "DUMMY"

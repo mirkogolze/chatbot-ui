@@ -135,9 +135,7 @@ export const POST = withErrorHandler(async (formData: any) => {
     })
 
     embeddings = await Promise.all(embeddingPromises)
-  } else if (
-    embeddingsProvider === "multilingual-e5-large" 
-  ) {
+  } else if (embeddingsProvider === "multilingual-e5-large") {
     const customOpenai = new OpenAI({
       baseURL: process.env.OPENAI_BASE_URL,
       apiKey: "DUMMY"
