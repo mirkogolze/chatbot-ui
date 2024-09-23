@@ -17,7 +17,6 @@ export async function POST(req: Request) {
       | "openai"
       | "local"
       | "multilingual-e5-large"
-      | "multilingual-e5-small"
     fileExtension: string
   }
 
@@ -87,8 +86,7 @@ export async function POST(req: Request) {
 
       embeddings = await Promise.all(embeddingPromises)
     } else if (
-      embeddingsProvider === "multilingual-e5-large" ||
-      embeddingsProvider === "multilingual-e5-small"
+      embeddingsProvider === "multilingual-e5-large" 
     ) {
       const customOpenai = new OpenAI({
         baseURL: process.env.OPENAI_BASE_URL,
@@ -125,7 +123,6 @@ export async function POST(req: Request) {
         tokens: chunk.tokens,
         openai_embedding:
           embeddingsProvider === "openai" ||
-          embeddingsProvider === "multilingual-e5-small" ||
           embeddingsProvider === "multilingual-e5-large"
             ? ((embeddings[index] || null) as any)
             : null,

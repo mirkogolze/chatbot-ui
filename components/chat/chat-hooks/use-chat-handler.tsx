@@ -122,7 +122,6 @@ export const useChatHandler = () => {
           | "openai"
           | "local"
           | "multilingual-e5-large"
-          | "multilingual-e5-small"
       })
 
       let allFiles = []
@@ -168,7 +167,6 @@ export const useChatHandler = () => {
           | "openai"
           | "local"
           | "multilingual-e5-large"
-          | "multilingual-e5-small"
       })
     } else if (selectedWorkspace) {
       // setChatSettings({

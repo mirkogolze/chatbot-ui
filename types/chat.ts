@@ -12,7 +12,6 @@ export interface ChatSettings {
     | "openai"
     | "local"
     | "multilingual-e5-large"
-    | "multilingual-e5-small"
 }
 
 export interface ChatPayload {

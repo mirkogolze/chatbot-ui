@@ -231,7 +231,6 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
               | "openai"
               | "local"
               | "multilingual-e5-large"
-              | "multilingual-e5-small"
           ) => {
             onChangeChatSettings({
               ...chatSettings,
@@ -248,7 +247,6 @@ const AdvancedContent: FC<AdvancedContentProps> = ({
               {profile?.use_azure_openai ? "Azure OpenAI" : "OpenAI"}
             </SelectItem>
             <SelectItem value="multilingual-e5-large">e5 large</SelectItem>
-            <SelectItem value="multilingual-e5-small">e5 small</SelectItem>
             {window.location.hostname === "localhost" && (
               <SelectItem value="local">Local</SelectItem>
             )}

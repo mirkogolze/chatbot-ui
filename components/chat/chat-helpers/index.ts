@@ -63,8 +63,7 @@ export const handleRetrieval = async (
   embeddingsProvider:
     | "openai"
     | "local"
-    | "multilingual-e5-large"
-    | "multilingual-e5-small",
+    | "multilingual-e5-large",
   sourceCount: number
 ) => {
   const response = await fetch("/api/retrieval/retrieve", {

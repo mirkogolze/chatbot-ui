@@ -67,7 +67,6 @@ export const createFileBasedOnExtension = async (
     | "openai"
     | "local"
     | "multilingual-e5-large"
-    | "multilingual-e5-small"
 ) => {
   const fileExtension = file.name.split(".").pop()
 
@@ -98,7 +97,6 @@ export const createFile = async (
     | "openai"
     | "local"
     | "multilingual-e5-large"
-    | "multilingual-e5-small"
 ) => {
   let validFilename = file.name.replace(/[^a-z0-9.]/gi, "_")
   const extension = file.name.split(".").pop()
@@ -173,7 +171,6 @@ export const createDocXFile = async (
     | "openai"
     | "local"
     | "multilingual-e5-large"
-    | "multilingual-e5-small"
 ) => {
   const { data: createdFile, error } = await supabase
     .from("files")

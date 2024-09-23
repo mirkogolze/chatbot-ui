@@ -116,7 +116,6 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
             | "openai"
             | "local"
             | "multilingual-e5-large"
-            | "multilingual-e5-small"
         })
       }
       return
@@ -133,7 +132,6 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
         | "openai"
         | "local"
         | "multilingual-e5-large"
-        | "multilingual-e5-small"
     })
   }
 

@@ -93,7 +93,6 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
               | "openai"
               | "local"
               | "multilingual-e5-large"
-              | "multilingual-e5-small"
           )
           tmpProgress++
           setProgress(tmpProgress)
