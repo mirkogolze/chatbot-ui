@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/components/ui/sheet"
-import {Progress} from "@/components/ui/progress";
+import { Progress } from "@/components/ui/progress"
 import { ChatbotUIContext } from "@/context/context"
 import { createAssistantCollections } from "@/db/assistant-collections"
 import { createAssistantFiles } from "@/db/assistant-files"
@@ -79,26 +79,27 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
       if (!selectedWorkspace) return
 
       setMultiFileLength(createState.length)
-      
-      let tmpProgress = 0;
-      const createdFiles: TablesInsert<"files">[] = await Promise.all(createStates.map(async (createState)=>{
-        const { file, ...rest } = createState
-        rest.embeddings_provider = selectedWorkspace.embeddings_provider
-        const result = await createFileBasedOnExtension(
-          file,
-          rest,
-          workspaceId,
-          selectedWorkspace.embeddings_provider as
-            | "openai"
-            | "local"
-            | "multilingual-e5-large"
-            | "multilingual-e5-small"
-        )
-        tmpProgress++;
-        setProgress(tmpProgress);
-        return result ;
 
-      }))
+      let tmpProgress = 0
+      const createdFiles: TablesInsert<"files">[] = await Promise.all(
+        createStates.map(async createState => {
+          const { file, ...rest } = createState
+          rest.embeddings_provider = selectedWorkspace.embeddings_provider
+          const result = await createFileBasedOnExtension(
+            file,
+            rest,
+            workspaceId,
+            selectedWorkspace.embeddings_provider as
+              | "openai"
+              | "local"
+              | "multilingual-e5-large"
+              | "multilingual-e5-small"
+          )
+          tmpProgress++
+          setProgress(tmpProgress)
+          return result
+        })
+      )
       return createdFiles
     },
     collections: async (
@@ -245,9 +246,9 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
         side="left"
         onKeyDown={handleKeyDown}
       >
-        {(contentType === "files" && creating && multiFileLength > 1) && (
-        <Progress value={progress} max={multiFileLength}></Progress>
-      )}
+        {contentType === "files" && creating && multiFileLength > 1 && (
+          <Progress value={progress} max={multiFileLength}></Progress>
+        )}
         <div className="grow overflow-auto">
           <SheetHeader>
             <SheetTitle className="text-2xl font-bold">
