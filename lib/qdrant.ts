@@ -57,10 +57,20 @@ export class qDrant {
         source: chunk.source
       }
     }))
-    await this.qclient.upsert(user_id + embeddingsProvider, {
-      wait: true,
-      points: file_items
-    })
+    if(file_items.length > 500){
+      for(let i = 0; i < file_items.length; i+=500){
+        await this.qclient.upsert(user_id + embeddingsProvider, {
+          wait: true,
+          points: file_items.slice(i,i+500)
+        })
+      }
+    }else{
+      await this.qclient.upsert(user_id + embeddingsProvider, {
+        wait: true,
+        points: file_items
+      })
+    }
+    
     return file_items
   }
 
