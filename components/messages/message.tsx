@@ -179,7 +179,7 @@ export const Message: FC<MessageProps> = ({
     }
     return acc
   }, fileAccumulator)
-
+  console.log(fileItems);
   return (
     <div
       className={cn(
@@ -310,7 +310,7 @@ export const Message: FC<MessageProps> = ({
           )}
         </div>
 
-        {/* {fileItems.length > 0 && (
+         {fileItems.length > 0 && (
           <div className="border-primary mt-6 border-t pt-4 font-bold">
             {!viewSources ? (
               <div
@@ -375,7 +375,7 @@ export const Message: FC<MessageProps> = ({
               </>
             )}
           </div>
-        )} */}
+        )} 
 
         <div className="mt-3 flex flex-wrap gap-2">
           {message.image_paths.map((path, index) => {

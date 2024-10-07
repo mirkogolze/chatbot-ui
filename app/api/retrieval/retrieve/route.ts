@@ -140,9 +140,7 @@ export const POST = withErrorHandler(async (json: any) => {
     }
   }
 
-  const mostSimilarChunks = chunks?.sort((a, b) => b.similarity - a.similarity)
-
-  return new Response(JSON.stringify({ results: mostSimilarChunks }), {
+  return new Response(JSON.stringify({ results: chunks }), {
     status: 200
   })
   //} catch (error: any) {

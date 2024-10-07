@@ -7,7 +7,7 @@ export const getMessageFileItemsByMessageId = async (messageId: string) => {
     .select(
       `
       id,
-      file_items (*)
+      file_items!file_items_message_id_fkey (*)
     `
     )
     .eq("id", messageId)
@@ -16,12 +16,20 @@ export const getMessageFileItemsByMessageId = async (messageId: string) => {
   if (!messageFileItems) {
     throw new Error(error.message)
   }
-
   return messageFileItems
 }
 
 export const createMessageFileItems = async (
-  messageFileItems: TablesInsert<"message_file_items">[]
+  messageFileItems: TablesInsert<"file_items">[]
 ) => {
-  return messageFileItems
+  const { data: messageFileItemsCreated, error } = await supabase
+    .from("file_items")
+    .insert(messageFileItems)
+    .select("*")
+  console.log(error);
+
+  if (error) {
+    throw new Error(error.message)
+  }
+  return messageFileItemsCreated
 }

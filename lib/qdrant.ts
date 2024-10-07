@@ -19,8 +19,7 @@ export interface SearchResult {
   content: any
   tokens: any // I assumed it could be an array of any type
   source: any
-  type: any
-  similarity: number
+  user_id:any
 }
 
 export class qDrant {
@@ -57,20 +56,20 @@ export class qDrant {
         source: chunk.source
       }
     }))
-    if(file_items.length > 500){
-      for(let i = 0; i < file_items.length; i+=500){
+    if (file_items.length > 500) {
+      for (let i = 0; i < file_items.length; i += 500) {
         await this.qclient.upsert(user_id + embeddingsProvider, {
           wait: true,
-          points: file_items.slice(i,i+500)
+          points: file_items.slice(i, i + 500)
         })
       }
-    }else{
+    } else {
       await this.qclient.upsert(user_id + embeddingsProvider, {
         wait: true,
         points: file_items
       })
     }
-    
+
     return file_items
   }
 
@@ -109,12 +108,11 @@ export class qDrant {
     }
     const ret = result.map((tmpDct, index) => ({
       id: tmpDct.id,
-      file_id: "",
+      file_id: tmpDct?.payload?.file_id,
       content: tmpDct?.payload?.content,
       tokens: tmpDct?.payload?.tokens,
       source: tmpDct?.payload?.source,
-      type: tmpDct?.payload?.type,
-      similarity: tmpDct.score
+      user_id: user_id
     }))
     return ret
   }

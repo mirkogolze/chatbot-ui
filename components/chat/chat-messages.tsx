@@ -18,10 +18,11 @@ export const ChatMessages: FC<ChatMessagesProps> = ({}) => {
     .map((chatMessage, index, array) => {
       const messageFileItems = chatFileItems.filter(
         (chatFileItem, _, self) =>
-          chatMessage.fileItems.includes(chatFileItem.id) &&
-          self.findIndex(item => item.id === chatFileItem.id) === _
+          chatMessage.fileItems.includes(chatFileItem.id) 
       )
-
+      console.log(messageFileItems);
+      console.log(chatMessage.fileItems);
+      // const messageFileItems = chatMessage.fileItems;
       return (
         <Message
           key={chatMessage.message.sequence_number}

@@ -663,6 +663,7 @@ export type Database = {
           updated_at: string | null
           user_id: string,
           source: string | null
+          message_id:string
         }
         Insert: {
           content: string
@@ -675,6 +676,7 @@ export type Database = {
           tokens: number
           updated_at?: string | null
           user_id: string
+          message_id:string
         }
         Update: {
           content?: string
@@ -687,6 +689,7 @@ export type Database = {
           tokens?: number
           updated_at?: string | null
           user_id?: string
+          message_id?:string
         }
         Relationships: [
           {
@@ -694,6 +697,13 @@ export type Database = {
             columns: ["file_id"]
             isOneToOne: false
             referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "file_items_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
             referencedColumns: ["id"]
           },
           {
