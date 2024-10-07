@@ -19,7 +19,7 @@ export interface SearchResult {
   content: any
   tokens: any // I assumed it could be an array of any type
   source: any
-  user_id:any
+  user_id: any
 }
 
 export class qDrant {

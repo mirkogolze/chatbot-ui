@@ -26,7 +26,7 @@ export const createMessageFileItems = async (
     .from("file_items")
     .insert(messageFileItems)
     .select("*")
-  console.log(error);
+  console.log(error)
 
   if (error) {
     throw new Error(error.message)

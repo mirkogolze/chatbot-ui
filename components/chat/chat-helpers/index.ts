@@ -497,18 +497,17 @@ export const handleCreateMessages = async (
     })
 
     const createdMessageFileItems = await createMessageFileItems(
-      retrievedFileItems.map((retrievedFileItem)=>{
+      retrievedFileItems.map(retrievedFileItem => {
         return {
-          "user_id": retrievedFileItem.user_id,
-          "source": retrievedFileItem.user_id,
-          "content": retrievedFileItem.content,
+          user_id: retrievedFileItem.user_id,
+          source: retrievedFileItem.user_id,
+          content: retrievedFileItem.content,
           // "id": createdMessages[0].id,
-          "message_id": createdMessages[1].id,
-          "tokens": retrievedFileItem.tokens,
-          "file_id": retrievedFileItem.file_id
+          message_id: createdMessages[1].id,
+          tokens: retrievedFileItem.tokens,
+          file_id: retrievedFileItem.file_id
         }
       })
-
     )
 
     finalChatMessages = [
