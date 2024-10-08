@@ -28,7 +28,7 @@ export const FileIcon: FC<FileIconProps> = ({ type, size = 32 }) => {
     return <IconFileText size={size} />
   } else if (type.includes("json")) {
     return <IconJson size={size} />
-  } else if (type.includes("markdown") || (type.includes("0"))) {
+  } else if (type.includes("markdown") || type.includes("0")) {
     return <IconMarkdown size={size} />
   } else {
     return <IconFile size={size} />

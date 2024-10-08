@@ -117,8 +117,8 @@ export class qDrant {
       source: tmpDct?.payload?.source,
       user_id: user_id,
       page_number: tmpDct?.payload?.page_number,
-      line_from:tmpDct?.payload?.line_from,
-      line_to:tmpDct?.payload?.line_to
+      line_from: tmpDct?.payload?.line_from,
+      line_to: tmpDct?.payload?.line_to
     }))
     return ret
   }

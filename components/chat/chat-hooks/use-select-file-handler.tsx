@@ -1,5 +1,5 @@
 import { ChatbotUIContext } from "@/context/context"
-import {  createFile } from "@/db/files"
+import { createFile } from "@/db/files"
 import { LLM_LIST } from "@/lib/models/llm/llm-list"
 import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -64,7 +64,8 @@ export const useSelectFileHandler = () => {
         } else if (
           simplifiedFileType.includes(
             "vnd.openxmlformats-officedocument.wordprocessingml.document"
-          ) || simplifiedFileType.includes("docx")
+          ) ||
+          simplifiedFileType.includes("docx")
         ) {
           simplifiedFileType = "docx"
         }
@@ -80,12 +81,13 @@ export const useSelectFileHandler = () => {
         ])
 
         // Handle docx files
-        
-          // Use readAsArrayBuffer for PDFs and readAsText for other types
-          file.type.includes("pdf") || file.type.includes("document") || file.type.includes("docx")
-            ? reader.readAsArrayBuffer(file)
-            : reader.readAsText(file)
-        
+
+        // Use readAsArrayBuffer for PDFs and readAsText for other types
+        file.type.includes("pdf") ||
+        file.type.includes("document") ||
+        file.type.includes("docx")
+          ? reader.readAsArrayBuffer(file)
+          : reader.readAsText(file)
       } else {
         throw new Error("Unsupported file type")
       }

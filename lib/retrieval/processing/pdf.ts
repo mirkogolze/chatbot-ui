@@ -8,7 +8,6 @@ export const processPdf = async (pdf: Blob): Promise<FileItemChunk[]> => {
   const loader = new PDFLoader(pdf)
   const docs = await loader.load()
 
-
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: CHUNK_SIZE,
     chunkOverlap: CHUNK_OVERLAP

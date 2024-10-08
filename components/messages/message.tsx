@@ -263,7 +263,7 @@ export const Message: FC<MessageProps> = ({
                     : selectedAssistant
                       ? selectedAssistant?.name
                       : MODEL_DATA?.modelName
-                  : profile?.display_name ?? profile?.username}
+                  : (profile?.display_name ?? profile?.username)}
               </div>
             </div>
           )}
@@ -365,9 +365,23 @@ export const Message: FC<MessageProps> = ({
                           >
                             <div className="text-sm font-normal">
                               <span className="mr-1 text-lg font-bold">-</span>{" "}
-                              {fileItem.page_number!=null
-                               ? "Page:"+  fileItem.page_number.toString() + " " + fileItem.line_from?.toString() + ":" + fileItem.line_to?.toString() + " " + fileItem.content.substring(0, 200) 
-                               : ( fileItem.line_from!=null ? fileItem.line_from?.toString() + ":" + fileItem.line_to?.toString() + " " + fileItem.content.substring(0, 200): fileItem.content.substring(0, 200))}...
+                              {fileItem.page_number != null
+                                ? "Page:" +
+                                  fileItem.page_number.toString() +
+                                  " " +
+                                  fileItem.line_from?.toString() +
+                                  ":" +
+                                  fileItem.line_to?.toString() +
+                                  " " +
+                                  fileItem.content.substring(0, 200)
+                                : fileItem.line_from != null
+                                  ? fileItem.line_from?.toString() +
+                                    ":" +
+                                    fileItem.line_to?.toString() +
+                                    " " +
+                                    fileItem.content.substring(0, 200)
+                                  : fileItem.content.substring(0, 200)}
+                              ...
                             </div>
                           </div>
                         ))}

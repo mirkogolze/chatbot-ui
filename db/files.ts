@@ -79,7 +79,7 @@ export const createFileBasedOnExtension = async (
   //     embeddingsProvider
   //   )
   // } else {
-    return createFile(file, fileRecord, workspace_id, embeddingsProvider)
+  return createFile(file, fileRecord, workspace_id, embeddingsProvider)
   // }
 }
 
@@ -152,8 +152,6 @@ export const createFile = async (
 
   return fetchedFile
 }
-
-
 
 export const createFiles = async (
   files: TablesInsert<"files">[],

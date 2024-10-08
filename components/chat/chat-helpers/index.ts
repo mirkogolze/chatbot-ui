@@ -506,9 +506,9 @@ export const handleCreateMessages = async (
           message_id: createdMessages[1].id,
           tokens: retrievedFileItem.tokens,
           file_id: retrievedFileItem.file_id,
-          page_number : retrievedFileItem.page_number,
-          line_from : retrievedFileItem.line_from,
-          line_to : retrievedFileItem.line_to
+          page_number: retrievedFileItem.page_number,
+          line_from: retrievedFileItem.line_from,
+          line_to: retrievedFileItem.line_to
         }
       })
     )
