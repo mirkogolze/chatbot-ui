@@ -17,9 +17,6 @@ export const processJSON = async (json: Blob): Promise<FileItemChunk[]> => {
 
   let chunks: FileItemChunk[] = []
 
-  splitDocs.forEach(doc => {
-    const docTokens = encode(doc.pageContent).length
-  })
 
   for (let i = 0; i < splitDocs.length; i++) {
     const doc = splitDocs[i]
@@ -28,7 +25,9 @@ export const processJSON = async (json: Blob): Promise<FileItemChunk[]> => {
       content: doc.pageContent,
       tokens: encode(doc.pageContent).length,
       type: "json",
-      source: ""
+      source: "",
+      line_from: doc.metadata.loc.lines.from,
+      line_to: doc.metadata.loc.lines.to
     })
   }
 

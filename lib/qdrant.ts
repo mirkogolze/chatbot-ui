@@ -53,7 +53,10 @@ export class qDrant {
         tokens: chunk.tokens,
         content: chunk.content,
         type: chunk.type,
-        source: chunk.source
+        source: chunk.source,
+        line_from: chunk.line_from,
+        line_to: chunk.line_to,
+        page_number: chunk.page_number
       }
     }))
     if (file_items.length > 500) {
@@ -112,7 +115,10 @@ export class qDrant {
       content: tmpDct?.payload?.content,
       tokens: tmpDct?.payload?.tokens,
       source: tmpDct?.payload?.source,
-      user_id: user_id
+      user_id: user_id,
+      page_number: tmpDct?.payload?.page_number,
+      line_from:tmpDct?.payload?.line_from,
+      line_to:tmpDct?.payload?.line_to
     }))
     return ret
   }

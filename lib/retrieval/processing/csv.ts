@@ -25,7 +25,9 @@ export const processCSV = async (csv: Blob): Promise<FileItemChunk[]> => {
       content: doc.pageContent,
       tokens: encode(doc.pageContent).length,
       type: "csv",
-      source: ""
+      source: "",
+      line_from: doc.metadata.loc.lines.from,
+      line_to: doc.metadata.loc.lines.to
     })
   }
 

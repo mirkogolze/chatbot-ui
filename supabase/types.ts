@@ -664,6 +664,9 @@ export type Database = {
           user_id: string,
           source: string | null
           message_id:string
+          page_number: number | null 
+          line_from: number | null 
+          line_to: number | null
         }
         Insert: {
           content: string
@@ -677,6 +680,9 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           message_id:string
+          page_number ?: number | null 
+          line_to ?: number | null 
+          line_from ?: number| null 
         }
         Update: {
           content?: string
@@ -690,6 +696,9 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           message_id?:string
+          page_number ?: number | null 
+          line_to ?:  number | null 
+          line_from ?: number | null 
         }
         Relationships: [
           {

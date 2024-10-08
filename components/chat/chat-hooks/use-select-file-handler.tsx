@@ -1,7 +1,6 @@
 import { ChatbotUIContext } from "@/context/context"
-import { createDocXFile, createFile } from "@/db/files"
+import {  createFile } from "@/db/files"
 import { LLM_LIST } from "@/lib/models/llm/llm-list"
-import mammoth from "mammoth"
 import { useContext, useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -10,6 +9,7 @@ export const ACCEPTED_FILE_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   "application/json",
   "text/markdown",
+  ".md",
   "application/pdf",
   "text/plain"
 ].join(",")
@@ -63,9 +63,8 @@ export const useSelectFileHandler = () => {
           simplifiedFileType = "pdf"
         } else if (
           simplifiedFileType.includes(
-            "vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-              "docx"
-          )
+            "vnd.openxmlformats-officedocument.wordprocessingml.document"
+          ) || simplifiedFileType.includes("docx")
         ) {
           simplifiedFileType = "docx"
         }
@@ -81,58 +80,12 @@ export const useSelectFileHandler = () => {
         ])
 
         // Handle docx files
-        if (
-          file.type.includes(
-            "vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-              "docx"
-          )
-        ) {
-          const arrayBuffer = await file.arrayBuffer()
-          const result = await mammoth.extractRawText({
-            arrayBuffer
-          })
-
-          const createdFile = await createDocXFile(
-            result.value,
-            file,
-            {
-              user_id: profile.user_id,
-              description: "",
-              file_path: "",
-              name: file.name,
-              size: file.size,
-              tokens: 0,
-              type: simplifiedFileType,
-              embeddings_provider: chatSettings.embeddingsProvider
-            },
-            selectedWorkspace.id,
-            chatSettings.embeddingsProvider
-          )
-
-          setFiles(prev => [...prev, createdFile])
-
-          setNewMessageFiles(prev =>
-            prev.map(item =>
-              item.id === "loading"
-                ? {
-                    id: createdFile.id,
-                    name: createdFile.name,
-                    type: createdFile.type,
-                    file: file
-                  }
-                : item
-            )
-          )
-
-          reader.onloadend = null
-
-          return
-        } else {
+        
           // Use readAsArrayBuffer for PDFs and readAsText for other types
-          file.type.includes("pdf")
+          file.type.includes("pdf") || file.type.includes("document") || file.type.includes("docx")
             ? reader.readAsArrayBuffer(file)
             : reader.readAsText(file)
-        }
+        
       } else {
         throw new Error("Unsupported file type")
       }

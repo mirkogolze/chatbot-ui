@@ -3,4 +3,7 @@ export type FileItemChunk = {
   tokens: number
   source?: string
   type?: string
+  page_number?: number 
+  line_from: number 
+  line_to: number
 }

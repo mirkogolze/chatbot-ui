@@ -1,6 +1,7 @@
 import { generateLocalEmbedding } from "@/lib/generate-local-embedding"
 import {
   processCSV,
+  processDocX,
   processJSON,
   processMarkdown,
   processPdf,
@@ -90,6 +91,9 @@ export const POST = withErrorHandler(async (formData: any) => {
       break
     case "txt":
       chunks = await processTxt(blob)
+      break
+    case "docx":
+      chunks = await processDocX(blob)
       break
     default:
       return new NextResponse("Unsupported file type", {

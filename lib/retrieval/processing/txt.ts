@@ -21,7 +21,9 @@ export const processTxt = async (txt: Blob): Promise<FileItemChunk[]> => {
 
     chunks.push({
       content: doc.pageContent,
-      tokens: encode(doc.pageContent).length
+      tokens: encode(doc.pageContent).length,
+      line_from: doc.metadata.loc.lines.from,
+      line_to: doc.metadata.loc.lines.to
     })
   }
 

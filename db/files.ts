@@ -1,9 +1,7 @@
 import { supabase } from "@/lib/supabase/browser-client"
 import { TablesInsert, TablesUpdate } from "@/supabase/types"
-import mammoth from "mammoth"
 import { toast } from "sonner"
 import { uploadFile } from "./storage/files"
-import { qclient } from "@/lib/qdrant"
 
 export const getFileById = async (fileId: string) => {
   const { data: file, error } = await supabase
@@ -67,22 +65,22 @@ export const createFileBasedOnExtension = async (
 ) => {
   const fileExtension = file.name.split(".").pop()
 
-  if (fileExtension === "docx") {
-    const arrayBuffer = await file.arrayBuffer()
-    const result = await mammoth.extractRawText({
-      arrayBuffer
-    })
+  // if (fileExtension === "docx") {
+  //   const arrayBuffer = await file.arrayBuffer()
+  //   const result = await mammoth.extractRawText({
+  //     arrayBuffer
+  //   })
 
-    return createDocXFile(
-      result.value,
-      file,
-      fileRecord,
-      workspace_id,
-      embeddingsProvider
-    )
-  } else {
+  //   return createDocXFile(
+  //     result.value,
+  //     file,
+  //     fileRecord,
+  //     workspace_id,
+  //     embeddingsProvider
+  //   )
+  // } else {
     return createFile(file, fileRecord, workspace_id, embeddingsProvider)
-  }
+  // }
 }
 
 // For non-docx files
@@ -155,69 +153,7 @@ export const createFile = async (
   return fetchedFile
 }
 
-// // Handle docx files
-export const createDocXFile = async (
-  text: string,
-  file: File,
-  fileRecord: TablesInsert<"files">,
-  workspace_id: string,
-  embeddingsProvider: "openai" | "local" | "multilingual-e5-large"
-) => {
-  const { data: createdFile, error } = await supabase
-    .from("files")
-    .insert([fileRecord])
-    .select("*")
-    .single()
 
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  await createFileWorkspace({
-    user_id: createdFile.user_id,
-    file_id: createdFile.id,
-    workspace_id
-  })
-
-  const filePath = await uploadFile(file, {
-    name: createdFile.name,
-    user_id: createdFile.user_id,
-    file_id: createdFile.name
-  })
-
-  await updateFile(createdFile.id, {
-    file_path: filePath
-  })
-
-  const response = await fetch("/api/retrieval/process/docx", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      text: text,
-      fileId: createdFile.id,
-      embeddingsProvider,
-      fileExtension: "docx"
-    })
-  })
-
-  if (!response.ok) {
-    const jsonText = await response.text()
-    const json = JSON.parse(jsonText)
-    console.error(
-      `Error processing file:${createdFile.id}, status:${response.status}, response:${json.message}`
-    )
-    toast.error("Failed to process file. Reason:" + json.message, {
-      duration: 10000
-    })
-    await deleteFile(createdFile.id)
-  }
-
-  const fetchedFile = await getFileById(createdFile.id)
-
-  return fetchedFile
-}
 
 export const createFiles = async (
   files: TablesInsert<"files">[],
