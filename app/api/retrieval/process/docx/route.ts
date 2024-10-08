@@ -116,6 +116,7 @@ export async function POST(req: Request) {
         user_id: profile.user_id,
         content: chunk.content,
         tokens: chunk.tokens,
+        message_id: "",
         openai_embedding:
           embeddingsProvider === "openai" ||
           embeddingsProvider === "multilingual-e5-large"
