@@ -176,6 +176,18 @@ export const Message: FC<MessageProps> = ({
       } else {
         acc[parentFile.id].count += 1
       }
+    }else {
+      if (!acc[fileItem.file_id]) {
+        acc[fileItem.file_id] = {
+          id: fileItem.file_id,
+          name: fileItem?.name || "Unknown",
+          count: 1,
+          type: "",
+          description: ""
+        }
+      } else {
+        acc[fileItem.file_id].count += 1
+      }
     }
     return acc
   }, fileAccumulator)
@@ -348,12 +360,6 @@ export const Message: FC<MessageProps> = ({
                       </div>
 
                       {fileItems
-                        .filter(fileItem => {
-                          const parentFile = files.find(
-                            parentFile => parentFile.id === fileItem.file_id
-                          )
-                          return parentFile?.id === file.id
-                        })
                         .map((fileItem, index) => (
                           <div
                             key={index}

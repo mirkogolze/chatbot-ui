@@ -110,15 +110,16 @@ export class qDrant {
       ]
     }
     const ret = result.map((tmpDct, index) => ({
-      id: tmpDct.id,
+      id: Number(tmpDct.id),
       file_id: tmpDct?.payload?.file_id,
       content: tmpDct?.payload?.content,
-      tokens: tmpDct?.payload?.tokens,
+      tokens: tmpDct?.payload?.tokens ,
       source: tmpDct?.payload?.source,
       user_id: user_id,
       page_number: tmpDct?.payload?.page_number,
       line_from: tmpDct?.payload?.line_from,
-      line_to: tmpDct?.payload?.line_to
+      line_to: tmpDct?.payload?.line_to,
+      name: tmpDct?.payload?.name
     }))
     return ret
   }

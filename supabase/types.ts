@@ -667,6 +667,7 @@ export type Database = {
           page_number: number | null 
           line_from: number | null 
           line_to: number | null
+          name: string | null
         }
         Insert: {
           content: string
@@ -683,6 +684,7 @@ export type Database = {
           page_number ?: number | null 
           line_to ?: number | null 
           line_from ?: number| null 
+          name ?: string | null
         }
         Update: {
           content?: string
@@ -699,6 +701,7 @@ export type Database = {
           page_number ?: number | null 
           line_to ?:  number | null 
           line_from ?: number | null 
+          name ?: string | null
         }
         Relationships: [
           {
