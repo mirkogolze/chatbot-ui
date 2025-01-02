@@ -113,7 +113,7 @@ export class qDrant {
       id: Number(tmpDct.id),
       file_id: tmpDct?.payload?.file_id,
       content: tmpDct?.payload?.content,
-      tokens: tmpDct?.payload?.tokens ,
+      tokens: tmpDct?.payload?.tokens,
       source: tmpDct?.payload?.source,
       user_id: user_id,
       page_number: tmpDct?.payload?.page_number,
