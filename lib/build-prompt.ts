@@ -192,7 +192,14 @@ export async function buildFinalMessages(
     }
   }
 
-  finalMessages.unshift(tempSystemMessage)
+  if (tempSystemMessage.model == "mixtral-8x7B") {
+    // quick fix - mixtral defined fix chat template without system prompt (https://huggingface.co/TheBloke/SauerkrautLM-Mixtral-8x7B-Instruct-GPTQ/blob/main/tokenizer_config.json#L32)  
+    if (finalMessages.length == 1) {
+      finalMessages[0].content = BUILT_PROMPT + "\n\n" + finalMessages[0].content
+    }
+  } else {
+    finalMessages.unshift(tempSystemMessage)
+  }
 
   finalMessages = finalMessages.map(message => {
     let content
