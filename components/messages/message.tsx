@@ -176,7 +176,7 @@ export const Message: FC<MessageProps> = ({
       } else {
         acc[parentFile.id].count += 1
       }
-    }else {
+    } else {
       if (!acc[fileItem.file_id]) {
         acc[fileItem.file_id] = {
           id: fileItem.file_id,
@@ -359,38 +359,37 @@ export const Message: FC<MessageProps> = ({
                         <div className="truncate">{file.name}</div>
                       </div>
 
-                      {fileItems
-                        .map((fileItem, index) => (
-                          <div
-                            key={index}
-                            className="ml-8 mt-1.5 flex cursor-pointer items-center space-x-2 hover:opacity-50"
-                            onClick={() => {
-                              setSelectedFileItem(fileItem)
-                              setShowFileItemPreview(true)
-                            }}
-                          >
-                            <div className="text-sm font-normal">
-                              <span className="mr-1 text-lg font-bold">-</span>{" "}
-                              {fileItem.page_number != null
-                                ? "Page:" +
-                                  fileItem.page_number.toString() +
-                                  " " +
-                                  fileItem.line_from?.toString() +
+                      {fileItems.map((fileItem, index) => (
+                        <div
+                          key={index}
+                          className="ml-8 mt-1.5 flex cursor-pointer items-center space-x-2 hover:opacity-50"
+                          onClick={() => {
+                            setSelectedFileItem(fileItem)
+                            setShowFileItemPreview(true)
+                          }}
+                        >
+                          <div className="text-sm font-normal">
+                            <span className="mr-1 text-lg font-bold">-</span>{" "}
+                            {fileItem.page_number != null
+                              ? "Page:" +
+                                fileItem.page_number.toString() +
+                                " " +
+                                fileItem.line_from?.toString() +
+                                ":" +
+                                fileItem.line_to?.toString() +
+                                " " +
+                                fileItem.content.substring(0, 200)
+                              : fileItem.line_from != null
+                                ? fileItem.line_from?.toString() +
                                   ":" +
                                   fileItem.line_to?.toString() +
                                   " " +
                                   fileItem.content.substring(0, 200)
-                                : fileItem.line_from != null
-                                  ? fileItem.line_from?.toString() +
-                                    ":" +
-                                    fileItem.line_to?.toString() +
-                                    " " +
-                                    fileItem.content.substring(0, 200)
-                                  : fileItem.content.substring(0, 200)}
-                              ...
-                            </div>
+                                : fileItem.content.substring(0, 200)}
+                            ...
                           </div>
-                        ))}
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
