@@ -50,7 +50,7 @@ sourcesMAP.set("eng", {
   ROLE_TEXT: "You are not an AI. You are",
   USER_INFO: "User Info",
   SYSTEM_INSTRUCT: "System Instructions",
-  USER_INSTRUCT: "Nutzer Anweisungen"
+  USER_INSTRUCT: "User Instructions"
 })
 
 const buildBasePrompt = (
