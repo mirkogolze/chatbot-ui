@@ -18,13 +18,18 @@ CREATE OR REPLACE FUNCTION insert_custom_models()
 RETURNS TRIGGER AS $$
 BEGIN
 
-    UPDATE workspaces SET embeddings_provider = 'multilingual-e5-large', default_model = 'mixtral-8x7B'
+    UPDATE workspaces SET embeddings_provider = 'multilingual-e5-large', default_model = 'llama3-70b'
     WHERE id = NEW.id;
 
     INSERT INTO models(user_id, api_key, base_url, model_id, name, description, context_length)
-    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'codellama-34b', 'Codellama-34b', 'EMTPY', 8192);
+    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'qwen2.5-coder-32b', 'Qwen2.5 Coder 32B', 'EMTPY', 15000);
     INSERT INTO model_workspaces(model_id, workspace_id, user_id)
-    VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'codellama-34b'), NEW.id, NEW.user_id);
+    VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'qwen2.5-coder-32b'), NEW.id, NEW.user_id);
+
+    INSERT INTO models(user_id, api_key, base_url, model_id, name, description, context_length)
+    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'mixtral-8x7B', 'Mixtral-8x7B', 'EMTPY', 30000);
+    INSERT INTO model_workspaces(model_id, workspace_id, user_id)
+    VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'mixtral-8x7B'), NEW.id, NEW.user_id);
 
     INSERT INTO models(user_id, api_key, base_url, model_id, name, description, context_length)
     VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'llama3.1-8b', 'Llama3.1-8b 128k', 'EMTPY', 128000);
@@ -32,7 +37,7 @@ BEGIN
     VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'llama3.1-8b'), NEW.id, NEW.user_id);
 
     INSERT INTO models(user_id, api_key, base_url, model_id, name, description, context_length)
-    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'llama3-70b', 'Llama3.1-70b', 'EMTPY', 10000);
+    VALUES (NEW.user_id, 'dummy', 'https://openai-api.mms-at-work.de/v1', 'llama3-70b', 'Llama3.3-70b', 'EMTPY', 10000);
     INSERT INTO model_workspaces(model_id, workspace_id, user_id)
     VALUES ((SELECT ID from models where user_id = NEW.user_id and model_id = 'llama3-70b'), NEW.id, NEW.user_id);
 
