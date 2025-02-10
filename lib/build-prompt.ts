@@ -54,14 +54,14 @@ sourcesMAP.set("eng", {
 })
 
 const getFormattedDate = (locale: string): string => {
-  const date = new Date();
+  const date = new Date()
   const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-  };
-  const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  }
+  const formatter = new Intl.DateTimeFormat(locale, options)
+  return formatter.format(date)
 }
 
 const buildBasePrompt = (
@@ -87,9 +87,7 @@ const buildBasePrompt = (
   }
 
   const formattedDate =
-    language === "deu"
-      ? getFormattedDate("de-DE")
-      : getFormattedDate("en-US")
+    language === "deu" ? getFormattedDate("de-DE") : getFormattedDate("en-US")
 
   fullPrompt += `${mapping?.TODAY} ${formattedDate}.\n\n`
 

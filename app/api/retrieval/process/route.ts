@@ -145,7 +145,7 @@ export const POST = withErrorHandler(async (formData: any) => {
       baseURL: process.env.OPENAI_BASE_URL,
       apiKey: "DUMMY"
     })
-    chunks = await cut_strings(chunks, embeddingsProvider);
+    chunks = await cut_strings(chunks, embeddingsProvider)
     const response = await customOpenai.embeddings.create({
       model: embeddingsProvider,
       input: chunks.map(chunk => chunk.content)
