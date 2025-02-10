@@ -75,7 +75,12 @@ const buildBasePrompt = (
     fullPrompt += `<${mapping?.ROLE}>\n${mapping?.ROLE_TEXT} ${assistant.name}.\n</${mapping?.ROLE}>\n\n`
   }
 
-  fullPrompt += `${mapping?.TODAY} ${new Date().toLocaleDateString()}.\n\n`
+  const today = new Date();
+  const formattedDate = language === "deu" 
+    ? today.toLocaleDateString("de-DE", { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : today.toISOString().split('T')[0];
+
+  fullPrompt += `${mapping?.TODAY} ${formattedDate}.\n\n`
 
   if (profileContext) {
     fullPrompt += `${mapping?.USER_INFO}:\n${profileContext}\n\n`
