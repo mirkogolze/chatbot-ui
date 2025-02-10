@@ -53,6 +53,17 @@ sourcesMAP.set("eng", {
   USER_INSTRUCT: "User Instructions"
 })
 
+const getFormattedDate = (locale: string): string => {
+  const date = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+  };
+  const formatter = new Intl.DateTimeFormat(locale, options);
+  return formatter.format(date);
+}
+
 const buildBasePrompt = (
   prompt: string,
   profileContext: string,
@@ -75,15 +86,10 @@ const buildBasePrompt = (
     fullPrompt += `<${mapping?.ROLE}>\n${mapping?.ROLE_TEXT} ${assistant.name}.\n</${mapping?.ROLE}>\n\n`
   }
 
-  const today = new Date()
   const formattedDate =
     language === "deu"
-      ? today.toLocaleDateString("de-DE", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric"
-        })
-      : today.toISOString().split("T")[0]
+      ? getFormattedDate("de-DE")
+      : getFormattedDate("en-US")
 
   fullPrompt += `${mapping?.TODAY} ${formattedDate}.\n\n`
 
