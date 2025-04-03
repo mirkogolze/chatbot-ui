@@ -32,7 +32,7 @@ export const processJSON = async (json: Blob): Promise<FileItemChunk[]> => {
     }
 
     return chunks
-  } catch(e) {
+  } catch (e) {
     return processTxt(json)
   }
 }
