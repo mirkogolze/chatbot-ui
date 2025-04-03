@@ -2,33 +2,37 @@ import { FileItemChunk } from "@/types"
 import { encode } from "gpt-tokenizer"
 import { JSONLoader } from "langchain/document_loaders/fs/json"
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
-import { CHUNK_OVERLAP, CHUNK_SIZE } from "."
+import { CHUNK_OVERLAP, CHUNK_SIZE, processTxt } from "."
 
 export const processJSON = async (json: Blob): Promise<FileItemChunk[]> => {
-  const loader = new JSONLoader(json)
-  const docs = await loader.load()
-  let completeText = docs.map(doc => doc.pageContent).join(" ")
+  try {
+    const loader = new JSONLoader(json)
+    const docs = await loader.load()
+    let completeText = docs.map(doc => doc.pageContent).join(" ")
 
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: CHUNK_SIZE,
-    chunkOverlap: CHUNK_OVERLAP
-  })
-  const splitDocs = await splitter.createDocuments([completeText])
-
-  let chunks: FileItemChunk[] = []
-
-  for (let i = 0; i < splitDocs.length; i++) {
-    const doc = splitDocs[i]
-
-    chunks.push({
-      content: doc.pageContent,
-      tokens: encode(doc.pageContent).length,
-      type: "json",
-      source: "",
-      line_from: doc.metadata.loc.lines.from,
-      line_to: doc.metadata.loc.lines.to
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: CHUNK_SIZE,
+      chunkOverlap: CHUNK_OVERLAP
     })
-  }
+    const splitDocs = await splitter.createDocuments([completeText])
 
-  return chunks
+    let chunks: FileItemChunk[] = []
+
+    for (let i = 0; i < splitDocs.length; i++) {
+      const doc = splitDocs[i]
+
+      chunks.push({
+        content: doc.pageContent,
+        tokens: encode(doc.pageContent).length,
+        type: "json",
+        source: "",
+        line_from: doc.metadata.loc.lines.from,
+        line_to: doc.metadata.loc.lines.to
+      })
+    }
+
+    return chunks
+  } catch(e) {
+    return processTxt(json)
+  }
 }
